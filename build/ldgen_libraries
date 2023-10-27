@@ -56,8 +56,6 @@ C:/esp/TozinTech_Scale/build/esp-idf/json/libjson.a
 C:/esp/TozinTech_Scale/build/esp-idf/mqtt/libmqtt.a
 C:/esp/TozinTech_Scale/build/esp-idf/perfmon/libperfmon.a
 C:/esp/TozinTech_Scale/build/esp-idf/spiffs/libspiffs.a
-C:/esp/TozinTech_Scale/build/esp-idf/touch_element/libtouch_element.a
 C:/esp/TozinTech_Scale/build/esp-idf/ulp/libulp.a
-C:/esp/TozinTech_Scale/build/esp-idf/usb/libusb.a
 C:/esp/TozinTech_Scale/build/esp-idf/wifi_provisioning/libwifi_provisioning.a
 C:/esp/TozinTech_Scale/build/esp-idf/main/libmain.a
