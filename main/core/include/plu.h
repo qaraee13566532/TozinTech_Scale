@@ -1,13 +1,11 @@
-
 #pragma once
-
 #include "constant.h"
 #include "baseCommiunicationEntity.h"
-
 
 class Plu : public BaseCommiunicationEntity
 
 {
+public:
     unsigned long sellPrice;
     unsigned long buyPrice;
     unsigned long pluNumber;

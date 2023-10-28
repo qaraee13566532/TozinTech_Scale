@@ -16,8 +16,10 @@ void app_main(void)
   Plu pluData(baseCommiunicationEntity);
   
   pluData.setData();
+
   printf("Hello world!\n");
   esp_systeminfo info;
+  
   info.print();
   for (int i = 10; i >= 0; i--)
   {
