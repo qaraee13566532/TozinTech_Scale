@@ -16,8 +16,8 @@ namespace TAX
         }
 
     public:
-        unsigned int Code;
-        unsigned int Type;
-        unsigned int Taxrate;
+        unsigned int code;
+        unsigned int type;
+        unsigned int taxrate;
     };
 }

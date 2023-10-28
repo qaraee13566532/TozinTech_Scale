@@ -17,6 +17,8 @@
     "idf.toolsPathWin": "c:\\esp\\.espressif",
     "idf.flashType": "UART",
     "files.associations": {
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "chrono": "cpp",
+        "utility": "cpp"
     }
 }
