@@ -1,15 +1,26 @@
 #pragma once
 
-#include "constant.h"
-#include "baseCommiunicationEntity.h"
+#include "core/constants/constant.h"
+#include "core/include/baseCommiunicationEntity.h"
 
-
-class Clerk : public BaseCommiunicationEntity
+namespace CLERK
 {
-public:
-    unsigned int Code;
-    char *ClerkID;
-    int *NickName;
-    char *Password;
-    unsigned int Level;
-};
+
+    class Clerk : public BaseCommiunicationEntity
+    {
+    public:
+        Clerk()
+        {
+        }
+        Clerk(BaseCommiunicationEntity baseCasEntity) : BaseCommiunicationEntity(baseCasEntity)
+        {
+        }
+
+    public:
+        unsigned int Code;
+        char *ClerkID;
+        int *NickName;
+        char *Password;
+        unsigned int Level;
+    };
+}

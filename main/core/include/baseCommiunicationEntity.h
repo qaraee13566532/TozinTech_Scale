@@ -1,9 +1,8 @@
 
 #pragma once
 
-#include "constant.h"
-#include "baseCommiunicationEntity.h"
-
+#include "core/constants/constant.h"
+#include "core/include/baseCommiunicationEntity.h"
 
 class BaseCommiunicationEntity
 {

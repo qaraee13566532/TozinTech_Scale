@@ -1,14 +1,21 @@
 
 #pragma once
 
-#include "constant.h"
-#include "baseCommiunicationEntity.h"
+#include "core/constants/constant.h"
+#include "core/include/baseCommiunicationEntity.h"
+#include "core/include/report.h"
 
-
-class Transmit : public Report,BaseCommiunicationEntity
+namespace COMMIUNICATION
 {
-public:
-    void SendData(void)
+
+    class Commiunication : public Report, BaseCommiunicationEntity
     {
-    }
-};
+    public:
+        Commiunication()
+        {
+        }
+        Commiunication(BaseCommiunicationEntity baseCasEntity) : BaseCommiunicationEntity(baseCasEntity)
+        {
+        }
+    };
+}
