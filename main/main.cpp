@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "core/include/baseCommiunicationEntity.h"
-#include "core/include/plu.h"
+#include "core/entities/baseCommiunicationEntity.h"
+#include "core/entities/plu.h"
 
 extern "C"
 {

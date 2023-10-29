@@ -1,9 +1,9 @@
 
 #pragma once
 
-#include "core/constants/constant.h"
-#include "core/include/baseCommiunicationEntity.h"
-#include "core/include/report.h"
+#include "core/constant.h"
+#include "core/entities/baseCommiunicationEntity.h"
+#include "core/entities/report.h"
 
 namespace COMMIUNICATION
 {

@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "core/constants/constant.h"
-#include "core/include/baseCommiunicationEntity.h"
+#include "core/constant.h"
+#include "core/entities/baseCommiunicationEntity.h"
 namespace BARCODE
 {
 

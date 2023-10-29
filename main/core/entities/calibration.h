@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "core/constants/constant.h"
+#include "core/constant.h"
 
 namespace CALIBRATION
 {
@@ -13,8 +13,8 @@ namespace CALIBRATION
         }
 
     public:
-        unsigned long maxOfFirstInterval;
-        unsigned long maxOfSecondInterval;
+        unsigned long firstMaxInterval;
+        unsigned long secondMaxInterval;
         long zeroAtod;
         unsigned long calibrationLoad;
         double weightFactor;
@@ -22,8 +22,5 @@ namespace CALIBRATION
         unsigned int secondAccuracy;
         unsigned char decimalPointPosition;
         bool isCalibrated;
-        unsigned char filterLevel;
-        unsigned char stableTime;
-        unsigned char stableExcentLevel;
     };
 }
