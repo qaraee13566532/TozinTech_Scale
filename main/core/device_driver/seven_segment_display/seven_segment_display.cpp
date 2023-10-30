@@ -1,7 +1,7 @@
 #include "seven_segment_display.h"
 #include "core/constant.h"
 #include "core/hardware_io.h"
-#include "core/device_driver/seven_segment_display.h"
+#include "core/device_driver/seven_segment_display/seven_segment_display.h"
 #include <rom/ets_sys.h>
 
 namespace SSEG_DEVICE_DRIVER
@@ -78,20 +78,30 @@ namespace SSEG_DEVICE_DRIVER
             WriteToTM1640(0x00, chipNumber);
         StopBus(chipNumber);
     }
-    void Sseg::InitSseg(unsigned char intensity, unsigned char chipNumber)
+    void Sseg::InitDisplay(unsigned char intensity)
     {
-        StartBus(chipNumber);
-        WriteToTM1640(0x40, chipNumber);
-        StopBus(chipNumber);
-        StartBus(chipNumber);
-        WriteToTM1640(0x88 | (intensity & 7), chipNumber);
-        StopBus(chipNumber);
+        sevenSegmentStateMachine = 0;
+        enableRefresh = false;
+        currentChipNumber = 0;
+        StartBus(0);
+        WriteToTM1640(0x40, 0);
+        StopBus(0);
+        StartBus(0);
+        WriteToTM1640(0x88 | (intensity & 7), 0);
+        StopBus(0);
+        ets_delay_us(5);
+        StartBus(1);
+        WriteToTM1640(0x40, 1);
+        StopBus(1);
+        StartBus(1);
+        WriteToTM1640(0x88 | (intensity & 7), 1);
+        StopBus(1);
     }
     void Sseg::DialpayStart(void)
     {
         enableRefresh = true;
     }
-    void Sseg::RefreshDisplay(void)
+    void Sseg::RefreshDisplay(unsigned char displayBuffer[MAX_DISPLAY_DIGITS])
     {
         if (enableRefresh)
         {
@@ -110,7 +120,7 @@ namespace SSEG_DEVICE_DRIVER
             }
             else if (sevenSegmentStateMachine >= 2 && sevenSegmentStateMachine <= 17)
             {
-        //        WriteToTM1640(disp[currentChipNumber * 16 + sevenSegmentStateMachine - 2],currentChipNumber);
+                WriteToTM1640(displayBuffer[currentChipNumber * 16 + sevenSegmentStateMachine - 2], currentChipNumber);
                 sevenSegmentStateMachine++;
             }
             else
