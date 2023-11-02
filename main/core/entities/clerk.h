@@ -1,7 +1,8 @@
 #pragma once
 
-#include "core/constant.h"
 #include "core/entities/baseCommiunicationEntity.h"
+
+const unsigned char MAX_CLERCK_NAME_LENGHT = 30;
 
 namespace CLERK
 {

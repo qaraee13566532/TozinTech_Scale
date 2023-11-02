@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "core/constant.h"
+const unsigned char MAX_WEIGHT_BUFFER_LENGHT = 30;
 
 namespace WEIGHT
 {

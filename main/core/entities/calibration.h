@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include "core/constant.h"
-
 namespace CALIBRATION
 {
     class Calibration

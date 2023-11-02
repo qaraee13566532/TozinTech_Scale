@@ -1,33 +1,11 @@
 #include "core/device_driver/matrix_keyboard/keyboard.h"
-#include "core/hardware_io.h"
-#include "core/constant.h"
+#include "core/device_driver/gpio/gpio.h"
 
 namespace MATRIX_KEYBOARD
 {
-    const gpio_num_t Scan_Port_Address[KEY_COLOUMNS] = {GPIO_NUM_3, GPIO_NUM_46, GPIO_NUM_9, GPIO_NUM_10,
-                                                        GPIO_NUM_11, GPIO_NUM_12, GPIO_NUM_13, GPIO_NUM_14,
-                                                        GPIO_NUM_21, GPIO_NUM_47, GPIO_NUM_48, GPIO_NUM_45,
-                                                        GPIO_NUM_35, GPIO_NUM_36};
 
     void Keyboard::InitKeyboard(void)
     {
-        esp_rom_gpio_pad_select_gpio(Key_Row1);
-        gpio_set_direction(Key_Row1, GPIO_MODE_INPUT);
-        esp_rom_gpio_pad_select_gpio(Key_Row2);
-        gpio_set_direction(Key_Row2, GPIO_MODE_INPUT);
-        esp_rom_gpio_pad_select_gpio(Key_Row3);
-        gpio_set_direction(Key_Row3, GPIO_MODE_INPUT);
-        esp_rom_gpio_pad_select_gpio(Key_Row4);
-        gpio_set_direction(Key_Row4, GPIO_MODE_INPUT);
-        esp_rom_gpio_pad_select_gpio(Key_Row5);
-        gpio_set_direction(Key_Row5, GPIO_MODE_INPUT);
-        esp_rom_gpio_pad_select_gpio(Key_Row6);
-        gpio_set_direction(Key_Row6, GPIO_MODE_INPUT);
-        for (loopCounter = 0; loopCounter < KEY_COLOUMNS; loopCounter++)
-        {
-            esp_rom_gpio_pad_select_gpio(Scan_Port_Address[loopCounter]);
-            gpio_set_direction(Scan_Port_Address[loopCounter], GPIO_MODE_INPUT);
-        }
         for (loopCounter = 0; loopCounter < MAX_PRESSED_KEY_BUFFER_SIZE; loopCounter++)
         {
             releasedKeysflag[loopCounter] = true;

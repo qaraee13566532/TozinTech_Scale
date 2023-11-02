@@ -1,8 +1,9 @@
 #include "seven_segment_display.h"
-#include "core/constant.h"
-#include "core/hardware_io.h"
+#include "core/device_driver/gpio/gpio.h"
+#include "core/global_constants.h"
 #include "core/device_driver/seven_segment_display/seven_segment_display.h"
 #include <rom/ets_sys.h>
+#include <string.h>
 
 namespace SSEG_DEVICE_DRIVER
 {
@@ -12,10 +13,10 @@ namespace SSEG_DEVICE_DRIVER
         switch (chipNumber)
         {
         case 0:
-            gpio_set_level(TM1640_CHIP_0_CLOCK, LOW_LEVEL);
+            gpio_set_level(TM1640_CHIP_1_CLOCK, LOW_LEVEL);
             break;
         case 1:
-            gpio_set_level(TM1640_CHIP_1_CLOCK, LOW_LEVEL);
+            gpio_set_level(TM1640_CHIP_2_CLOCK, LOW_LEVEL);
             break;
         default:
             break;
@@ -31,10 +32,10 @@ namespace SSEG_DEVICE_DRIVER
         switch (chipNumber)
         {
         case 0:
-            gpio_set_level(TM1640_CHIP_0_CLOCK, LOW_LEVEL);
+            gpio_set_level(TM1640_CHIP_1_CLOCK, LOW_LEVEL);
             break;
         case 1:
-            gpio_set_level(TM1640_CHIP_1_CLOCK, LOW_LEVEL);
+            gpio_set_level(TM1640_CHIP_2_CLOCK, LOW_LEVEL);
             break;
         default:
             break;
@@ -52,9 +53,9 @@ namespace SSEG_DEVICE_DRIVER
         {
             ets_delay_us(2);
             if (chipNumber == 0)
-                gpio_set_level(TM1640_CHIP_0_CLOCK, HICH_LEVEL);
-            else
                 gpio_set_level(TM1640_CHIP_1_CLOCK, HICH_LEVEL);
+            else
+                gpio_set_level(TM1640_CHIP_2_CLOCK, HICH_LEVEL);
 
             if (Data & 0x01)
                 gpio_set_level(TM1640_DATA, LOW_LEVEL);
@@ -63,9 +64,9 @@ namespace SSEG_DEVICE_DRIVER
             Data >>= 1;
             ets_delay_us(2);
             if (chipNumber == 0)
-                gpio_set_level(TM1640_CHIP_0_CLOCK, LOW_LEVEL);
-            else
                 gpio_set_level(TM1640_CHIP_1_CLOCK, LOW_LEVEL);
+            else
+                gpio_set_level(TM1640_CHIP_2_CLOCK, LOW_LEVEL);
             ets_delay_us(2);
         }
     }
@@ -80,9 +81,20 @@ namespace SSEG_DEVICE_DRIVER
     }
     void Sseg::InitDisplay(unsigned char intensity)
     {
+
+        isPriceComputing = true;
         sevenSegmentStateMachine = 0;
         enableRefresh = false;
         currentChipNumber = 0;
+        BlankDisplay();
+        gpio_set_level(TM1640_CHIP_1_CLOCK, LOW_LEVEL);
+        gpio_set_level(TM1640_CHIP_2_CLOCK, HICH_LEVEL);
+        gpio_set_level(TM1640_DATA, LOW_LEVEL);
+        ets_delay_us(50);
+        gpio_set_level(TM1640_CHIP_1_CLOCK, HICH_LEVEL);
+        gpio_set_level(TM1640_CHIP_2_CLOCK, LOW_LEVEL);
+        gpio_set_level(TM1640_DATA, LOW_LEVEL);
+        ets_delay_us(50);
         StartBus(0);
         WriteToTM1640(0x40, 0);
         StopBus(0);
@@ -101,7 +113,14 @@ namespace SSEG_DEVICE_DRIVER
     {
         enableRefresh = true;
     }
-    void Sseg::RefreshDisplay(unsigned char displayBuffer[MAX_DISPLAY_DIGITS])
+    void Sseg::DialpayStop(void)
+    {
+        unsigned char loopCounter = 0;
+        for (loopCounter = 0; loopCounter < MAX_DISPLAY_DIGITS; loopCounter++)
+            displayBuffer[loopCounter] = 0x00;
+        enableRefresh = false;
+    }
+    void Sseg::RefreshDisplay(void)
     {
         if (enableRefresh)
         {
@@ -137,5 +156,52 @@ namespace SSEG_DEVICE_DRIVER
                 }
             }
         }
+    }
+    void Sseg::BlankDisplay(void)
+    {
+        unsigned char loopCounter = 0, digitNumber;
+        if (isPriceComputing == true)
+            digitNumber = 32;
+        else
+            digitNumber = 6;
+        for (loopCounter = 0; loopCounter < digitNumber; loopCounter++)
+            displayBuffer[loopCounter] = 0;
+    }
+    void Sseg::Write_Message_To_Display(const char *Message, unsigned char displayPart, unsigned char posintion, bool cleanFirst)
+    {
+        unsigned int loopCnt, DispCnt = 0, pointPos = 0;
+        size_t Len;
+        unsigned char data = 0;
+
+        posintion += DisplayPos[displayPart];
+        if (posintion > 0)
+            posintion--;
+        Len = strlen(Message);
+        // if (Len > DisplayMaxDigitNo[displayPart])
+        //     Len = DisplayMaxDigitNo[displayPart];
+        if (cleanFirst == true)
+            BlankDisplayPart(displayPart);
+        for (loopCnt = 0; loopCnt < Len; loopCnt++)
+        {
+            data = *(Message + loopCnt);
+            if (DispCnt < DisplayMaxDigitNo[displayPart])
+            {
+                if (data != '.')
+                {
+                    displayBuffer[posintion - DispCnt] = Text_Convertion_Table[data];
+                    pointPos = posintion - DispCnt;
+                    DispCnt++;
+                }
+                else
+                    displayBuffer[pointPos] |= POINT;
+            }
+        }
+    }
+    void Sseg::BlankDisplayPart(unsigned char displayPart)
+    {
+        unsigned int loopCnt, posintion;
+        posintion = DisplayPos[displayPart];
+        for (loopCnt = 0; loopCnt < DisplayMaxDigitNo[displayPart]; loopCnt++)
+            displayBuffer[posintion + loopCnt] = 0;
     }
 }

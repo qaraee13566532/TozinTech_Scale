@@ -14,6 +14,8 @@ extern "C"
 
 void app_main(void)
 {
-  printf("Initialize .... !\n");
   initialize();
+  printf("Initialized successfully .\n");
+  for(;;)
+      vTaskDelay(10 / portTICK_PERIOD_MS);
 }

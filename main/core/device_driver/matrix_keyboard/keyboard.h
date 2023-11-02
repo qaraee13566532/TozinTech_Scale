@@ -1,7 +1,13 @@
 #pragma once
 
-#include "core/constant.h"
 #include <driver/gpio.h>
+
+const unsigned char KEY_COLOUMNS = 14;
+const unsigned char KEY_LONG_PRESS_TIME = 20;
+const unsigned char KEY_SHORT_PRESS_TIME = 4;
+const unsigned char KEY_RELEASE_TIME = 2;
+const unsigned char MAX_KEYBOARD_BUFFER_SIZE = 5;
+const unsigned char MAX_PRESSED_KEY_BUFFER_SIZE = 10;
 
 namespace MATRIX_KEYBOARD
 {
@@ -22,7 +28,7 @@ namespace MATRIX_KEYBOARD
         static inline unsigned char pressedKeysNumber, keyRows, keyColumnCounter, loopCounter, keyHead, keyTail;
 
     public:
-        static bool IfKeyNotExistInBuffer(unsigned char rowId,unsigned char colId);
+        static bool IfKeyNotExistInBuffer(unsigned char rowId, unsigned char colId);
         static void InitKeyboard(void);
         static unsigned char ReturnFreeLocation(void);
         static void Readkeyboard(void);
