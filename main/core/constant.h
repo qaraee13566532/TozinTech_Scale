@@ -10,3 +10,10 @@
 #define MAX_KEY_RELEASE_TIME       2
 #define MAX_READ_KEY               4
 #define MAX_KEYBOARD_BUFFER_SIZE   10
+
+#define MAX_PRESSED_KEY_BUFFER_SIZE 5
+#define KEY_ROWS                    6
+#define KEY_COLOUMNS                14
+#define KEY_LONG_PRESS_TIME         20
+#define KEY_SHORT_PRESS_TIME        4
+#define KEY_RELEASE_TIME            2
