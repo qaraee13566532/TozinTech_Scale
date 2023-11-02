@@ -19,7 +19,8 @@
     "files.associations": {
         "xstring": "cpp",
         "chrono": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "system_error": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

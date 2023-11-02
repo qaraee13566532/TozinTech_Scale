@@ -10,8 +10,8 @@ const gpio_num_t TM1640_CHIP_2_CLOCK = GPIO_NUM_8;
 const gpio_num_t TM1640_DATA = GPIO_NUM_20;
 
 // ADS1232 main ADC IO
-const gpio_num_t ADS1232_CLOCK = GPIO_NUM_19;
-const gpio_num_t ADS1232_DATA = GPIO_NUM_19;
+const gpio_num_t ADS1232_CLOCK = GPIO_NUM_1;
+const gpio_num_t ADS1232_DATA = GPIO_NUM_2;
 
 // KEYBOARD main ADC IO
 const gpio_num_t Key_Row6 = GPIO_NUM_42;
