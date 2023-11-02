@@ -9,7 +9,7 @@ namespace MATRIX_KEYBOARD
                                                         GPIO_NUM_21, GPIO_NUM_47, GPIO_NUM_48, GPIO_NUM_45,
                                                         GPIO_NUM_35, GPIO_NUM_36};
 
-    void Keyboard::initKeyboard(void)
+    void Keyboard::InitKeyboard(void)
     {
         esp_rom_gpio_pad_select_gpio(Key_Row1);
         gpio_set_direction(Key_Row1, GPIO_MODE_INPUT);
@@ -45,12 +45,12 @@ namespace MATRIX_KEYBOARD
         pressedKeysNumber = 0;
     }
 
-    void Keyboard::keyIOSetReset(gpio_num_t Port_Bits, bool SetReset)
+    void Keyboard::KeyIOSetReset(gpio_num_t Port_Bits, bool SetReset)
     {
         SetReset ? gpio_set_direction(Port_Bits, GPIO_MODE_OUTPUT) : gpio_set_direction(Port_Bits, GPIO_MODE_INPUT);
         SetReset ? gpio_set_level(Port_Bits, 1) : gpio_set_level(Port_Bits, 0);
     }
-    bool Keyboard::ifKeyNotExistInBuffer(unsigned char rowId, unsigned char colId)
+    bool Keyboard::IfKeyNotExistInBuffer(unsigned char rowId, unsigned char colId)
     {
         for (loopCounter = 0; loopCounter < MAX_PRESSED_KEY_BUFFER_SIZE; loopCounter++)
         {
@@ -60,7 +60,7 @@ namespace MATRIX_KEYBOARD
         return true;
     }
 
-    unsigned char Keyboard::returnFreeLocation(void)
+    unsigned char Keyboard::ReturnFreeLocation(void)
     {
         for (loopCounter = 0; loopCounter < MAX_PRESSED_KEY_BUFFER_SIZE; loopCounter++)
         {
@@ -70,17 +70,17 @@ namespace MATRIX_KEYBOARD
         return loopCounter;
     }
 
-    void Keyboard::savePressedKeysToBuffer(gpio_num_t keyRow, unsigned char rowId)
+    void Keyboard::SavePressedKeysToBuffer(gpio_num_t keyRow, unsigned char rowId)
     {
         unsigned char freeBufferLocation;
-        freeBufferLocation = returnFreeLocation();
+        freeBufferLocation =ReturnFreeLocation();
         if (pressedKeysNumber < MAX_PRESSED_KEY_BUFFER_SIZE)
         {
             if (gpio_get_level(keyRow))
             {
                 if (releasedKeysflag[freeBufferLocation] == true)
                 {
-                    if (ifKeyNotExistInBuffer(rowId, keyColumnCounter))
+                    if (IfKeyNotExistInBuffer(rowId, keyColumnCounter))
                     {
                         pressedKeysRowBuffer[freeBufferLocation] = rowId;
                         pressedKeysColoumnBuffer[freeBufferLocation] = keyColumnCounter;
@@ -94,7 +94,7 @@ namespace MATRIX_KEYBOARD
             }
         }
     }
-    gpio_num_t Keyboard::getRowGpio(unsigned char rowId)
+    gpio_num_t Keyboard::GetRowGpio(unsigned char rowId)
     {
         gpio_num_t gpio = Key_Row1;
 
@@ -121,14 +121,14 @@ namespace MATRIX_KEYBOARD
         }
         return gpio;
     }
-    void Keyboard::getKeys(void)
+    void Keyboard::GetKeys(void)
     {
-        savePressedKeysToBuffer(Key_Row1, 0x01);
-        savePressedKeysToBuffer(Key_Row2, 0x02);
-        savePressedKeysToBuffer(Key_Row3, 0x04);
-        savePressedKeysToBuffer(Key_Row4, 0x08);
-        savePressedKeysToBuffer(Key_Row5, 0x10);
-        savePressedKeysToBuffer(Key_Row6, 0x20);
+        SavePressedKeysToBuffer(Key_Row1, 0x01);
+        SavePressedKeysToBuffer(Key_Row2, 0x02);
+        SavePressedKeysToBuffer(Key_Row3, 0x04);
+        SavePressedKeysToBuffer(Key_Row4, 0x08);
+        SavePressedKeysToBuffer(Key_Row5, 0x10);
+        SavePressedKeysToBuffer(Key_Row6, 0x20);
 
         for (loopCounter = 0; loopCounter < MAX_PRESSED_KEY_BUFFER_SIZE; loopCounter++)
         {
@@ -136,7 +136,7 @@ namespace MATRIX_KEYBOARD
             {
                 if (pressedKeysColoumnBuffer[loopCounter] == keyColumnCounter)
                 {
-                    if (gpio_get_level(getRowGpio(pressedKeysRowBuffer[loopCounter])))
+                    if (gpio_get_level(GetRowGpio(pressedKeysRowBuffer[loopCounter])))
 
                     {
                         if (shortPressedKeysflag[loopCounter] == false && longPressedKeysflag[loopCounter] == false)
@@ -167,7 +167,7 @@ namespace MATRIX_KEYBOARD
 
                 if (pressedKeysColoumnBuffer[loopCounter] == keyColumnCounter)
                 {
-                    if (gpio_get_level(getRowGpio(pressedKeysRowBuffer[loopCounter])) == 0)
+                    if (gpio_get_level(GetRowGpio(pressedKeysRowBuffer[loopCounter])) == 0)
                     {
                         if (releasedKeysCounter[loopCounter] < KEY_RELEASE_TIME)
                             releasedKeysCounter[loopCounter]++;
@@ -205,11 +205,11 @@ namespace MATRIX_KEYBOARD
             }
         }
 
-        keyIOSetReset(Scan_Port_Address[keyColumnCounter], 0);
+        KeyIOSetReset(Scan_Port_Address[keyColumnCounter], 0);
         keyColumnCounter++;
         if (keyColumnCounter == KEY_COLOUMNS)
             keyColumnCounter = 0;
-        keyIOSetReset(Scan_Port_Address[keyColumnCounter], 1);
+        KeyIOSetReset(Scan_Port_Address[keyColumnCounter], 1);
     }
 
 }

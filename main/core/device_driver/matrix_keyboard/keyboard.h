@@ -22,13 +22,13 @@ namespace MATRIX_KEYBOARD
         static inline unsigned char pressedKeysNumber, keyRows, keyColumnCounter, loopCounter, keyHead, keyTail;
 
     public:
-        static bool ifKeyNotExistInBuffer(unsigned char rowId,unsigned char colId);
-        static void initKeyboard(void);
-        static unsigned char returnFreeLocation(void);
-        static void readkeyboard(void);
-        static void getKeys(void);
-        static void keyIOSetReset(gpio_num_t Port_Bits, bool SetReset);
-        static void savePressedKeysToBuffer(gpio_num_t keyRow, unsigned char rowId);
-        static gpio_num_t getRowGpio(unsigned char rowId);
+        static bool IfKeyNotExistInBuffer(unsigned char rowId,unsigned char colId);
+        static void InitKeyboard(void);
+        static unsigned char ReturnFreeLocation(void);
+        static void Readkeyboard(void);
+        static void GetKeys(void);
+        static void KeyIOSetReset(gpio_num_t Port_Bits, bool SetReset);
+        static void SavePressedKeysToBuffer(gpio_num_t keyRow, unsigned char rowId);
+        static gpio_num_t GetRowGpio(unsigned char rowId);
     };
 }
