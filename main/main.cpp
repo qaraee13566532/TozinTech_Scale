@@ -34,6 +34,9 @@ using namespace STORAGE;
 void app_main(void)
 {
   initialize();
+
+
+
   cJSON *root;
   root = cJSON_CreateObject();
   esp_chip_info_t chip_info;
@@ -42,13 +45,35 @@ void app_main(void)
   cJSON_AddNumberToObject(root, "cores", chip_info.cores);
   cJSON_AddTrueToObject(root, "flag_true");
   cJSON_AddFalseToObject(root, "flag_false");
-  // const char *my_json_string = cJSON_Print(root);
   char *my_json_string = cJSON_Print(root);
   ESP_LOGI(TAG, "my_json_string\n%s", my_json_string);
   cJSON_Delete(root);
+	ESP_LOGI(TAG, "Deserialize.....");
+	cJSON *root2 = cJSON_Parse(my_json_string);
+	if (cJSON_GetObjectItem(root2, "version")) {
+		char *version = cJSON_GetObjectItem(root2,"version")->valuestring;
+		ESP_LOGI(TAG, "version=%s",version);
+	}
+	if (cJSON_GetObjectItem(root2, "cores")) {
+		int cores = cJSON_GetObjectItem(root2,"cores")->valueint;
+		ESP_LOGI(TAG, "cores=%d",cores);
+	}
+	if (cJSON_GetObjectItem(root2, "flag_true")) {
+		bool flag_true = cJSON_GetObjectItem(root2,"flag_true")->valueint;
+		ESP_LOGI(TAG, "flag_true=%d",flag_true);
+	}
+	if (cJSON_GetObjectItem(root2, "flag_false")) {
+		bool flag_false = cJSON_GetObjectItem(root2,"flag_false")->valueint;
+		ESP_LOGI(TAG, "flag_false=%d",flag_false);
+	}
+	cJSON_Delete(root2);
+	cJSON_free(my_json_string);
 
-  int cc = 0;
-  char *buf = (char *)malloc(100);
+
+  // int cc = 0;
+  // char *buf = (char *)malloc(100);
+
+  
   for (;;)
   {
     if (Weight::isWeightReceived)
