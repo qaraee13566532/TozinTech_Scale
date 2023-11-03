@@ -8,7 +8,7 @@
 #include "core/device_driver/chip_adc/chip_adc.h"
 #include "core/device_driver/commiunication_uart/comm_uart.h"
 #include "core/device_driver/printer_uart/printer_uart.h"
-
+#include "core/device_driver/storage/storage.h"
 
 using namespace SSEG_DEVICE_DRIVER;
 using namespace GLOBAL_TIMER;
@@ -18,7 +18,7 @@ using namespace ADS1232_WEIGHT;
 using namespace CHIP_ADC;
 using namespace COMMIUNICATION_UART;
 using namespace PRINTER_UART;
-
+using namespace STORAGE;
 
 
 void initialize(void)
@@ -36,5 +36,6 @@ void initialize(void)
     Sseg::Write_Message_To_Display("PAnd", WEIGHT, 5, true);
     Sseg::Write_Message_To_Display("ScALE", UNIT_PRICE, 6, true);
     Sseg::Write_Message_To_Display("VEr-1.00", TOTAL_PRICE, 7, true);
+    Storage::InitStorage();
 
 }

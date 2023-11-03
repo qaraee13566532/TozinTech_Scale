@@ -11,6 +11,7 @@
 #include "core/device_driver/commiunication_uart/comm_uart.h"
 #include "core/device_driver/printer_uart/printer_uart.h"
 #include "core/device_driver/rtc/rtc.h"
+#include "core/device_driver/storage/storage.h"
 
 extern void initialize(void);
 
@@ -25,29 +26,28 @@ using namespace CHIP_ADC;
 using namespace COMMIUNICATION_UART;
 using namespace PRINTER_UART;
 using namespace REALTIME_CLOCK;
-
+using namespace STORAGE;
 
 void app_main(void)
 {
   initialize();
   int cc = 0;
-  char *buf = "                                                   ";
+  char *buf = (char *) malloc(100);
   printf("Initialized successfully .\n");
-  vTaskDelay(1000 / portTICK_PERIOD_MS);
   for (;;)
   {
     if (Weight::isWeightReceived)
     {
-  //    printf("%ld\n", Weight::rawAdcNumber);
+      //    printf("%ld\n", Weight::rawAdcNumber);
       Sseg::Write_Number_To_Display(Weight::rawAdcNumber, TOTAL_PRICE, false, 0, false, false, 8, true, true);
       Weight::isWeightReceived = 0;
-    //  printf("DC = %d\n", ChipAdc::DcAdapterVoltage);
-   //   printf("BA = %d\n", ChipAdc::BatteryVoltage);
-      sprintf(buf, "--->  data is %d\n", cc);
-      //CommiunicationUart::CommTransmitData(buf);
-      //PrinterUart::PrinterTransmitData(buf);
-    //  Rtc::GetDate();
-    //  printf("second  = %d\n", Rtc::Second);
+      //  printf("DC = %d\n", ChipAdc::DcAdapterVoltage);
+      //   printf("BA = %d\n", ChipAdc::BatteryVoltage);
+     // sprintf(buf, "--->  data is %d\n", cc);
+      // CommiunicationUart::CommTransmitData(buf);
+      // PrinterUart::PrinterTransmitData(buf);
+      //  Rtc::GetDate();
+      //  printf("second  = %d\n", Rtc::Second);
     }
   }
 }
