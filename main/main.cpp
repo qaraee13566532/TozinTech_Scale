@@ -10,6 +10,7 @@
 #include "core/device_driver/chip_adc/chip_adc.h"
 #include "core/device_driver/commiunication_uart/comm_uart.h"
 #include "core/device_driver/printer_uart/printer_uart.h"
+#include "core/device_driver/rtc/rtc.h"
 
 extern void initialize(void);
 
@@ -23,6 +24,8 @@ using namespace SSEG_DEVICE_DRIVER;
 using namespace CHIP_ADC;
 using namespace COMMIUNICATION_UART;
 using namespace PRINTER_UART;
+using namespace REALTIME_CLOCK;
+
 
 void app_main(void)
 {
@@ -35,15 +38,16 @@ void app_main(void)
   {
     if (Weight::isWeightReceived)
     {
-      printf("%ld\n", Weight::rawAdcNumber);
+  //    printf("%ld\n", Weight::rawAdcNumber);
       Sseg::Write_Number_To_Display(Weight::rawAdcNumber, TOTAL_PRICE, false, 0, false, false, 8, true, true);
       Weight::isWeightReceived = 0;
-      printf("DC = %d\n", ChipAdc::DcAdapterVoltage);
-      printf("BA = %d\n", ChipAdc::BatteryVoltage);
+    //  printf("DC = %d\n", ChipAdc::DcAdapterVoltage);
+   //   printf("BA = %d\n", ChipAdc::BatteryVoltage);
       sprintf(buf, "--->  data is %d\n", cc);
-      CommiunicationUart::CommTransmitData(buf);
-      PrinterUart::PrinterTransmitData(buf);
-      cc++;
+      //CommiunicationUart::CommTransmitData(buf);
+      //PrinterUart::PrinterTransmitData(buf);
+    //  Rtc::GetDate();
+    //  printf("second  = %d\n", Rtc::Second);
     }
   }
 }
