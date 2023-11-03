@@ -34,7 +34,7 @@ namespace STORAGE
         InitStorageFiles(SETTING_PATH);
         InitStorageFiles(WEIGHT_PATH);
     }
-    esp_err_t Storage::InitStorageFiles(char *path)
+    esp_err_t Storage::InitStorageFiles(const char *path)
     {
         struct stat st;
         if (stat(path, &st) != 0)

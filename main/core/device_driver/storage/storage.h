@@ -5,19 +5,20 @@
 #include "esp_vfs_fat.h"
 
 
-#define STORAGE_MAX_CHAR_SIZE        128
-#define BASE_PATH                    "/spiflash"
-#define PLU_PATH                     "/spiflash/plu.csv"
-#define CUSTOMER_PATH                "/spiflash/customer.csv"
-#define CLERK_PATH                   "/spiflash/clerk.csv"
-#define BARCODE_PATH                 "/spiflash/barcode.csv"
-#define TAX_PATH                     "/spiflash/tax.csv"
-#define DISCOUNT_PATH                "/spiflash/discount.csv"
-#define STORE_PATH                   "/spiflash/store.csv"
-#define REPORT_PATH                  "/spiflash/reports.csv"
-#define SETTING_PATH                 "/spiflash/settings.csv"
-#define CALIBRATION_PATH             "/spiflash/calibration.csv"
-#define WEIGHT_PATH                  "/spiflash/weight.csv"
+#define STORAGE_MAX_CHAR_SIZE              128
+
+inline const char * BASE_PATH           =         "/spiflash";
+inline const char * PLU_PATH            =         "/spiflash/plu.json";
+inline const char * CUSTOMER_PATH       =         "/spiflash/customer.json";
+inline const char * CLERK_PATH          =         "/spiflash/clerk.json";
+inline const char * BARCODE_PATH        =         "/spiflash/barcode.json";
+inline const char * TAX_PATH            =         "/spiflash/tax.json";
+inline const char * DISCOUNT_PATH       =         "/spiflash/discount.json";
+inline const char * STORE_PATH          =         "/spiflash/store.json";
+inline const char * REPORT_PATH         =         "/spiflash/reports.json";
+inline const char * SETTING_PATH        =         "/spiflash/settings.json";
+inline const char * CALIBRATION_PATH    =         "/spiflash/calibration.json";
+inline const char * WEIGHT_PATH         =         "/spiflash/weight.json";
 
 namespace STORAGE
 {
@@ -28,6 +29,6 @@ namespace STORAGE
 
     public:
         static void InitStorage(void);
-        static esp_err_t InitStorageFiles(char *path);
+        static esp_err_t InitStorageFiles(const char *path);
     };
 }
