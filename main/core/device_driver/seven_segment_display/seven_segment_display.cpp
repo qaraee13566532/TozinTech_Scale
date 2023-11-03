@@ -204,4 +204,65 @@ namespace SSEG_DEVICE_DRIVER
         for (loopCnt = 0; loopCnt < DisplayMaxDigitNo[displayPart]; loopCnt++)
             displayBuffer[posintion + loopCnt] = 0;
     }
+    void Sseg::Write_Number_To_Display(long long input, unsigned char displayPart, bool showDecimalPoint, unsigned char decimapPointPosition, bool Show_BackZero, bool Show_Front_Zero, unsigned char digitDisplayNumbers, bool alignCenter, bool cleanFirst)
+    {
+        unsigned char dcnt, dig_dsp, len = 0, pos;
+        long long temp_input;
+        if (alignCenter == true)
+        {
+            temp_input = input;
+            while (temp_input)
+            {
+                len++;
+                temp_input /= 10;
+            }
+            len = (DisplayMaxDigitNo[displayPart] - len) / 2;
+        }
+        else
+            len = 0;
+        bool sign = false;
+        if (input < 0)
+        {
+            digitDisplayNumbers--;
+            sign = true;
+            input *= -1;
+        }
+
+        if (cleanFirst)
+            BlankDisplayPart(displayPart);
+        dcnt = DisplayPos[displayPart] + len;
+        do
+        {
+            dig_dsp = input % 10;
+            if (input || Show_BackZero)
+                displayBuffer[dcnt] = Text_Convertion_Table[dig_dsp+'0'];
+            else
+            {
+                if (Show_Front_Zero == 0)
+                {
+                    if ((dcnt == DisplayPos[WEIGHT] || dcnt == DisplayPos[TARE] || dcnt == DisplayPos[UNIT_PRICE] || dcnt == DisplayPos[TOTAL_PRICE]) && input == 0)
+                        displayBuffer[dcnt] = Text_Convertion_Table[0+'0'];
+                    else
+                        displayBuffer[dcnt] = DISPOFF;
+                }
+                else
+                {
+                    if (dcnt < Show_Front_Zero + DisplayPos[displayPart])
+                        displayBuffer[dcnt] = Text_Convertion_Table[dig_dsp+'0'];
+                    else
+                        displayBuffer[dcnt] = DISPOFF;
+                }
+            }
+            if (dcnt == decimapPointPosition + DisplayPos[displayPart] && showDecimalPoint)
+                displayBuffer[dcnt] |= POINT;
+            input /= 10;
+
+            dcnt++;
+            pos = DisplayPos[displayPart] + DisplayMaxDigitNo[displayPart];
+            if (pos > 0)
+                pos--;
+            if (sign)
+                displayBuffer[pos] |= MINUS;
+        } while (dcnt < digitDisplayNumbers + DisplayPos[displayPart]);
+    }
 }

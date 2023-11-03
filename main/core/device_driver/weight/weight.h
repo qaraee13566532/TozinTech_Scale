@@ -1,7 +1,7 @@
 
 #pragma once
 
-const unsigned char MAX_WEIGHT_BUFFER_LENGHT = 30;
+#define  MAX_WEIGHT_BUFFER_LENGHT             30
 
 namespace ADS1232_WEIGHT
 {

@@ -20,7 +20,19 @@
         "xstring": "cpp",
         "chrono": "cpp",
         "utility": "cpp",
-        "system_error": "cpp"
+        "system_error": "cpp",
+        "complex": "cpp",
+        "format": "cpp",
+        "functional": "cpp",
+        "optional": "cpp",
+        "regex": "cpp",
+        "type_traits": "cpp",
+        "xlocmon": "cpp",
+        "xlocnum": "cpp",
+        "xtr1common": "cpp",
+        "xlocale": "cpp",
+        "vector": "cpp",
+        "xutility": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

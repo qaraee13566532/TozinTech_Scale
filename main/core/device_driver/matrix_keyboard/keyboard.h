@@ -2,12 +2,12 @@
 
 #include <driver/gpio.h>
 
-const unsigned char KEY_COLOUMNS = 14;
-const unsigned char KEY_LONG_PRESS_TIME = 20;
-const unsigned char KEY_SHORT_PRESS_TIME = 4;
-const unsigned char KEY_RELEASE_TIME = 2;
-const unsigned char MAX_KEYBOARD_BUFFER_SIZE = 5;
-const unsigned char MAX_PRESSED_KEY_BUFFER_SIZE = 10;
+#define KEY_COLOUMNS                      14 
+#define KEY_LONG_PRESS_TIME               20  
+#define KEY_SHORT_PRESS_TIME               4  
+#define KEY_RELEASE_TIME                   2  
+#define MAX_KEYBOARD_BUFFER_SIZE           5  
+#define MAX_PRESSED_KEY_BUFFER_SIZE       10
 
 namespace MATRIX_KEYBOARD
 {

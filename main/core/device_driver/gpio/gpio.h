@@ -5,43 +5,43 @@
 
 
 // DISPLAY SEVEN SEGMENT
-const gpio_num_t TM1640_CHIP_1_CLOCK = GPIO_NUM_19;
-const gpio_num_t TM1640_CHIP_2_CLOCK = GPIO_NUM_8;
-const gpio_num_t TM1640_DATA = GPIO_NUM_20;
+#define TM1640_CHIP_1_CLOCK    GPIO_NUM_19 
+#define TM1640_CHIP_2_CLOCK    GPIO_NUM_8 
+#define TM1640_DATA            GPIO_NUM_20 
 
 // ADS1232 main ADC IO
-const gpio_num_t ADS1232_CLOCK = GPIO_NUM_1;
-const gpio_num_t ADS1232_DATA = GPIO_NUM_2;
+#define ADS1232_CLOCK          GPIO_NUM_1 
+#define ADS1232_DATA           GPIO_NUM_2 
 
 // KEYBOARD main ADC IO
-const gpio_num_t Key_Row6 = GPIO_NUM_42;
-const gpio_num_t Key_Row5 = GPIO_NUM_41;
-const gpio_num_t Key_Row4 = GPIO_NUM_37;
-const gpio_num_t Key_Row3 = GPIO_NUM_38;
-const gpio_num_t Key_Row2 = GPIO_NUM_39;
-const gpio_num_t Key_Row1 = GPIO_NUM_40;
+#define Key_Row6               GPIO_NUM_42 
+#define Key_Row5               GPIO_NUM_41 
+#define Key_Row4               GPIO_NUM_37 
+#define Key_Row3               GPIO_NUM_38 
+#define Key_Row2               GPIO_NUM_39 
+#define Key_Row1               GPIO_NUM_40 
 
 // BUZZER IO
-const gpio_num_t BUZZER = GPIO_NUM_5;
+#define BUZZER                 GPIO_NUM_5 
 
 // UPS CONTROLLER IO
-const gpio_num_t UPS_CTRL = GPIO_NUM_4;
+#define UPS_CTRL               GPIO_NUM_4 
 
 // CASH DRAWER
-const gpio_num_t CASH = GPIO_NUM_16;
+#define CASH                   GPIO_NUM_16 
 
 // CALIBRATION KEY
-const gpio_num_t CAL_JMP = GPIO_NUM_15;
+#define CAL_JMP                GPIO_NUM_15 
 
 // OUTPUT RELAYS IO
-const gpio_num_t Relay_1 = GPIO_NUM_3;
-const gpio_num_t Relay_2 = GPIO_NUM_46;
-const gpio_num_t Relay_3 = GPIO_NUM_9;
-const gpio_num_t Relay_4 = GPIO_NUM_10;
-const gpio_num_t Relay_5 = GPIO_NUM_11;
-const gpio_num_t Relay_6 = GPIO_NUM_12;
-const gpio_num_t Relay_7 = GPIO_NUM_13;
-const gpio_num_t Relay_8 = GPIO_NUM_14;
+#define Relay_1                GPIO_NUM_3 
+#define Relay_2                GPIO_NUM_46 
+#define Relay_3                GPIO_NUM_9 
+#define Relay_4                GPIO_NUM_10 
+#define Relay_5                GPIO_NUM_11 
+#define Relay_6                GPIO_NUM_12 
+#define Relay_7                GPIO_NUM_13 
+#define Relay_8                GPIO_NUM_14 
 
 // KEYBOARD SCAN IO
 const gpio_num_t Scan_Port_Address[KEY_COLOUMNS] = {GPIO_NUM_3, GPIO_NUM_46, GPIO_NUM_9, GPIO_NUM_10,

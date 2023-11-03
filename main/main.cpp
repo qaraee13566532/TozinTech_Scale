@@ -6,6 +6,10 @@
 #include "core/device_driver/matrix_keyboard/keyboard.h"
 #include "esp_timer.h"
 #include "core/device_driver/weight/weight.h"
+#include "core/device_driver/seven_segment_display/seven_segment_display.h"
+#include "core/device_driver/chip_adc/chip_adc.h"
+#include "core/device_driver/commiunication_uart/comm_uart.h"
+#include "core/device_driver/printer_uart/printer_uart.h"
 
 extern void initialize(void);
 
@@ -15,20 +19,31 @@ extern "C"
 }
 
 using namespace ADS1232_WEIGHT;
-
+using namespace SSEG_DEVICE_DRIVER;
+using namespace CHIP_ADC;
+using namespace COMMIUNICATION_UART;
+using namespace PRINTER_UART;
 
 void app_main(void)
 {
   initialize();
-
+  int cc = 0;
+  char *buf = "                                                   ";
   printf("Initialized successfully .\n");
   vTaskDelay(1000 / portTICK_PERIOD_MS);
   for (;;)
   {
     if (Weight::isWeightReceived)
     {
-      printf("adc code = %ld\n", Weight::rawAdcNumber);
+      printf("%ld\n", Weight::rawAdcNumber);
+      Sseg::Write_Number_To_Display(Weight::rawAdcNumber, TOTAL_PRICE, false, 0, false, false, 8, true, true);
       Weight::isWeightReceived = 0;
+      printf("DC = %d\n", ChipAdc::DcAdapterVoltage);
+      printf("BA = %d\n", ChipAdc::BatteryVoltage);
+      sprintf(buf, "--->  data is %d\n", cc);
+      CommiunicationUart::CommTransmitData(buf);
+      PrinterUart::PrinterTransmitData(buf);
+      cc++;
     }
   }
 }

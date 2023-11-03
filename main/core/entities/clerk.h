@@ -2,7 +2,7 @@
 
 #include "core/entities/baseCommiunicationEntity.h"
 
-const unsigned char MAX_CLERCK_NAME_LENGHT = 30;
+#define  MAX_CLERCK_NAME_LENGHT       30 
 
 namespace CLERK
 {

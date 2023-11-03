@@ -2,8 +2,8 @@
 
 #include "core/entities/baseCommiunicationEntity.h"
 
-const unsigned char MAX_PLU_NAME_LENGHT = 30;
-const unsigned char MAX_BARCODE_LENGHT = 30;
+#define   MAX_PLU_NAME_LENGHT   30
+#define   MAX_BARCODE_LENGHT   30
 
 namespace PLU
 {
