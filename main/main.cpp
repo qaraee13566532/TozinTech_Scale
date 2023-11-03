@@ -12,9 +12,12 @@
 #include "core/device_driver/printer_uart/printer_uart.h"
 #include "core/device_driver/rtc/rtc.h"
 #include "core/device_driver/storage/storage.h"
+#include "cJSON.h"
+#include "esp_log.h"
+#include "esp_chip_info.h"
 
 extern void initialize(void);
-
+static inline const char *TAG = "example";
 extern "C"
 {
   void app_main();
@@ -31,9 +34,21 @@ using namespace STORAGE;
 void app_main(void)
 {
   initialize();
+  cJSON *root;
+  root = cJSON_CreateObject();
+  esp_chip_info_t chip_info;
+  esp_chip_info(&chip_info);
+  cJSON_AddStringToObject(root, "version", IDF_VER);
+  cJSON_AddNumberToObject(root, "cores", chip_info.cores);
+  cJSON_AddTrueToObject(root, "flag_true");
+  cJSON_AddFalseToObject(root, "flag_false");
+  // const char *my_json_string = cJSON_Print(root);
+  char *my_json_string = cJSON_Print(root);
+  ESP_LOGI(TAG, "my_json_string\n%s", my_json_string);
+  cJSON_Delete(root);
+
   int cc = 0;
-  char *buf = (char *) malloc(100);
-  printf("Initialized successfully .\n");
+  char *buf = (char *)malloc(100);
   for (;;)
   {
     if (Weight::isWeightReceived)
@@ -43,7 +58,7 @@ void app_main(void)
       Weight::isWeightReceived = 0;
       //  printf("DC = %d\n", ChipAdc::DcAdapterVoltage);
       //   printf("BA = %d\n", ChipAdc::BatteryVoltage);
-     // sprintf(buf, "--->  data is %d\n", cc);
+      // sprintf(buf, "--->  data is %d\n", cc);
       // CommiunicationUart::CommTransmitData(buf);
       // PrinterUart::PrinterTransmitData(buf);
       //  Rtc::GetDate();

@@ -12,6 +12,7 @@ core/device_driver/commiunication_uart/comm_uart.cpp
 core/device_driver/printer_uart/printer_uart.cpp
 core/device_driver/rtc/rtc.cpp
 core/device_driver/storage/storage.cpp
+core/device_driver/sntp/sntp.cpp
 
 
 
@@ -27,6 +28,7 @@ core/device_driver/chip_adc
 core/device_driver/gpio
 core/device_driver/printer_uart
 core/device_driver/rtc
+core/device_driver/sntp
 core/device_driver/storage
 core/device_driver/commiunication_uart
 core/device_driver/matrix_keyboard  
