@@ -14,9 +14,11 @@ namespace SNTP
     {
         static inline bool autoAdjustDateTime;
         static inline const char *TAG;
+        static inline bool isUpdated;
 
     public:
         static void InitSntp(void);
         static void time_sync_notification_cb(struct timeval *tv);
+        static void requestDateTime(void);
     };
 }

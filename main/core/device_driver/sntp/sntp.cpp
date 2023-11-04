@@ -7,6 +7,14 @@ namespace SNTP
     void Sntp::time_sync_notification_cb(struct timeval *tv)
     {
         ESP_LOGI(TAG, "Notification of a time synchronization event");
+        isUpdated=true;
+    }
+
+    void Sntp::requestDateTime(void)
+    {
+        sntp_stop();
+        sntp_init();
+        isUpdated=false;
     }
 
     void Sntp::InitSntp(void)
