@@ -13,13 +13,14 @@
 #include "core/device_driver/rtc/rtc.h"
 #include "core/device_driver/storage/storage.h"
 #include "core/device_driver/sntp/sntp.h"
+#include "core/device_driver/matrix_keyboard/keyboard.h"
 
 // #include "cJSON.h"
 // #include "esp_log.h"
 // #include "esp_chip_info.h"
 
 extern void initialize(void);
-static inline const char *TAG = "example";
+
 extern "C"
 {
   void app_main();
@@ -33,9 +34,13 @@ using namespace PRINTER_UART;
 using namespace REALTIME_CLOCK;
 using namespace STORAGE;
 using namespace SNTP;
+using namespace MATRIX_KEYBOARD;
 
 void app_main(void)
 {
+  unsigned char keydata = 0, keyState = 0;
+  bool keytype = false;
+
   initialize();
 
   // cJSON *root;
@@ -74,9 +79,20 @@ void app_main(void)
   // char *buf = (char *)malloc(100);
 
   // https://github.com/espressif/esp-idf/tree/master/components/json
+
   Sntp::isRequestedForDateTime = true;
   for (;;)
   {
+    Keyboard::readKeyBuffer(keydata, keytype);
+    if (keydata == 1 && keytype == false)
+      Sntp::isRequestedForDateTime = true;
+    if (Sntp::isDateTimeReceived)
+    {
+      Sntp::isDateTimeReceived = false;
+      Rtc::GetDate();
+      printf("data = %d-%d-%d , %ld \n", Rtc::Year, Rtc::Month, Rtc::Day, Rtc::Current_Date);
+    }
+
     if (Weight::isWeightReceived)
     {
       //    printf("%ld\n", Weight::rawAdcNumber);
@@ -87,9 +103,8 @@ void app_main(void)
       // sprintf(buf, "--->  data is %d\n", cc);
       // CommiunicationUart::CommTransmitData(buf);
       // PrinterUart::PrinterTransmitData(buf);
-      Rtc::dateType=0;
-      Rtc::GetDate();
-      printf("data = %d-%d-%d , %ld \n", Rtc::Year, Rtc::Month, Rtc::Day,Rtc::Current_Date);
+      //   Rtc::GetDate();
+      //   printf("data = %d-%d-%d , %ld \n", Rtc::Year, Rtc::Month, Rtc::Day,Rtc::Current_Date);
     }
   }
 }

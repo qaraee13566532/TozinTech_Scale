@@ -36,5 +36,6 @@ namespace MATRIX_KEYBOARD
         static void KeyIOSetReset(gpio_num_t Port_Bits, bool SetReset);
         static void SavePressedKeysToBuffer(gpio_num_t keyRow, unsigned char rowId);
         static gpio_num_t GetRowGpio(unsigned char rowId);
+        static void readKeyBuffer(unsigned char & data, bool  &typ);
     };
 }

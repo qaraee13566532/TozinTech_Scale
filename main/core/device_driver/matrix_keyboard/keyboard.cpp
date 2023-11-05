@@ -51,7 +51,7 @@ namespace MATRIX_KEYBOARD
     void Keyboard::SavePressedKeysToBuffer(gpio_num_t keyRow, unsigned char rowId)
     {
         unsigned char freeBufferLocation;
-        freeBufferLocation =ReturnFreeLocation();
+        freeBufferLocation = ReturnFreeLocation();
         if (pressedKeysNumber < MAX_PRESSED_KEY_BUFFER_SIZE)
         {
             if (gpio_get_level(keyRow))
@@ -156,7 +156,6 @@ namespace MATRIX_KEYBOARD
                                 keyPressedType[keyHead] = false;
                             else
                                 keyPressedType[keyHead] = true;
-                            printf("read key = %d -- type = %d\n", KeyCodeBuffer[keyHead], keyPressedType[keyHead]);
                             keyHead = keyHead + 1;
                             if (keyHead >= MAX_KEYBOARD_BUFFER_SIZE)
                                 keyHead = 0;
@@ -189,5 +188,18 @@ namespace MATRIX_KEYBOARD
             keyColumnCounter = 0;
         KeyIOSetReset(Scan_Port_Address[keyColumnCounter], 1);
     }
-
+    void Keyboard::readKeyBuffer(unsigned char  &data, bool  &type)
+    {
+        if (keyHead != keyTail)
+        {
+            data = KeyCodeBuffer[keyTail];
+            type = keyPressedType[keyTail];
+            keyTail = keyTail + 1;
+            if (keyTail >= MAX_PRESSED_KEY_BUFFER_SIZE)
+                keyTail = 0;
+        }
+        else
+            data = 0;
+    }
+    
 }

@@ -28,13 +28,18 @@ namespace GLOBAL_TIMER
             chipAdcReadTime = 0;
             ChipAdc::internal_adc_tasks();
         }
-        if (Sntp::isRequestedForDateTime==true)
+        if (Sntp::isRequestedForDateTime == true)
         {
-            if (++requestDateTime > 5000)
+            Sntp::requestDateTime();
+            Sntp::isRequestedForDateTime = false;
+            printf("requested.\n");
+        }
+        if (Sntp::autoAdjustDateTime)
+        {
+            if (++requestDateTime > 15000)
             {
                 requestDateTime = 0;
-                Sntp::requestDateTime();
-                Sntp::isRequestedForDateTime=false;
+                Sntp::isRequestedForDateTime = true;
             }
         }
         else
@@ -43,7 +48,7 @@ namespace GLOBAL_TIMER
 
     void Timer::InitTimer(void)
     {
-        const esp_timer_create_args_t my_timer_args = {
+        esp_timer_create_args_t my_timer_args = {
             .callback = &TimerCallback,
             .name = "My Timer"};
         ESP_ERROR_CHECK(esp_timer_create(&my_timer_args, &timer_handler));

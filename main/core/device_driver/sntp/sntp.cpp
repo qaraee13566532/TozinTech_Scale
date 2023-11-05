@@ -8,6 +8,7 @@ namespace SNTP
     {
         ESP_LOGI(TAG, "Notification of a time synchronization event");
         isDateTimeReceived = true;
+        
     }
 
     void Sntp::requestDateTime(void)
@@ -17,11 +18,15 @@ namespace SNTP
         isRequestedForDateTime = true;
     }
 
-    void Sntp::InitSntp(bool autoAdjustDateTime)
+    void Sntp::InitSntp(bool autoAdjust)
     {
-        TAG="example";
-        if (autoAdjustDateTime == false)
+        TAG = "example";
+        if (autoAdjust == false)
+        {
+            autoAdjustDateTime = false;
             return;
+        }
+        autoAdjustDateTime = true;
         isRequestedForDateTime = false;
         isDateTimeReceived = false;
         ESP_LOGI(TAG, "Initializing SNTP");
