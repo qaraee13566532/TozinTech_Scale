@@ -16,15 +16,14 @@ namespace REALTIME_CLOCK
         Min = (Current_Time - (Current_Time / 10000) * 10000) / 100;
         Second = Current_Time % 100;
     }
-    void Rtc::InitRtc(void)
-    {
-    }
-    int Rtc::DateConvert(unsigned char type)
+
+    unsigned char Rtc::DateConvert(unsigned char datemode)
+    // datemode: 1 s->m  , 0 m -> s
     {
         long datetemp2, datetemp1, datetemp3;
         int ytemp;
         unsigned char datei;
-        if (type)
+        if (datemode)
         {
             ytemp = datesyear;
             if ((ytemp < 61 && ytemp > 50) || datesday > 31 || datesmon > 12 || !datesday || !datesmon)
@@ -145,6 +144,7 @@ namespace REALTIME_CLOCK
         }
         return 1;
     }
+
     void Rtc::GetDate(void)
     {
         time_t now;
@@ -158,7 +158,7 @@ namespace REALTIME_CLOCK
         Hour = timeinfo.tm_hour;
         Day = timeinfo.tm_mday;
         Month = timeinfo.tm_mon + 1;
-        Year = timeinfo.tm_year;
+        Year = timeinfo.tm_year-100;
         datemyear = Year;
         datemmon = Month;
         datemday = Day;

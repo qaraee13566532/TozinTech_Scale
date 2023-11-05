@@ -87,10 +87,9 @@ void app_main(void)
       // sprintf(buf, "--->  data is %d\n", cc);
       // CommiunicationUart::CommTransmitData(buf);
       // PrinterUart::PrinterTransmitData(buf);
+      Rtc::dateType=0;
       Rtc::GetDate();
-      
-      printf("data =%ld \n",Rtc::Current_Date);
-      printf("data = %d-%d-%d , %d-%d-%d \n", Rtc::Year, Rtc::Month, Rtc::Day, Rtc::Hour, Rtc::Min, Rtc::Second);
+      printf("data = %d-%d-%d , %ld \n", Rtc::Year, Rtc::Month, Rtc::Day,Rtc::Current_Date);
     }
   }
 }
