@@ -4945,6 +4945,16 @@
                 "type": "int"
             },
             {
+                "children": [],
+                "depends_on": null,
+                "help": "Max number of the STA connects to AP.",
+                "id": "ESP_MAX_STA_CONN",
+                "name": "ESP_MAX_STA_CONN",
+                "range": null,
+                "title": "Maximal STA connections",
+                "type": "int"
+            },
+            {
                 "children": [
                     {
                         "children": [],

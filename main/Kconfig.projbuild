@@ -22,7 +22,11 @@ menu "Example Configuration"
         default 5
         help
             Set the Maximum retry to avoid station reconnecting to the AP unlimited when the AP is really inexistent.
-
+    config ESP_MAX_STA_CONN
+        int "Maximal STA connections"
+        default 4
+        help
+            Max number of the STA connects to AP.
     choice ESP_WIFI_SCAN_AUTH_MODE_THRESHOLD
         prompt "WiFi Scan auth mode threshold"
         default ESP_WIFI_AUTH_WPA2_PSK

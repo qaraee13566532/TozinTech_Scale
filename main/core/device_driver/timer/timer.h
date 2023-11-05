@@ -9,6 +9,7 @@ namespace GLOBAL_TIMER
     {
         static inline esp_timer_handle_t timer_handler;
         static inline unsigned char externalReadAdcTime,chipAdcReadTime;
+        static inline unsigned long requestDateTime;
     public:
         static void TimerCallback(void *param);
         static void InitTimer(void);

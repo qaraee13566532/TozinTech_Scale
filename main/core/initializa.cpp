@@ -9,6 +9,9 @@
 #include "core/device_driver/commiunication_uart/comm_uart.h"
 #include "core/device_driver/printer_uart/printer_uart.h"
 #include "core/device_driver/storage/storage.h"
+#include "core/device_driver/wifi/wifi.h"
+#include "core/device_driver/nvs/nvs.h"
+#include "core/device_driver/sntp/sntp.h"
 
 using namespace SSEG_DEVICE_DRIVER;
 using namespace GLOBAL_TIMER;
@@ -19,7 +22,9 @@ using namespace CHIP_ADC;
 using namespace COMMIUNICATION_UART;
 using namespace PRINTER_UART;
 using namespace STORAGE;
-
+using namespace WIFI;
+using namespace NVS;
+using namespace SNTP;
 
 void initialize(void)
 {
@@ -37,5 +42,7 @@ void initialize(void)
     Sseg::Write_Message_To_Display("ScALE", UNIT_PRICE, 6, true);
     Sseg::Write_Message_To_Display("VEr-1.00", TOTAL_PRICE, 7, true);
     Storage::InitStorage();
-
+    Nvs::InitNvs();
+    Wifi::InitWifi(WIFI_STA_MODE);
+    Sntp::InitSntp(true);
 }
