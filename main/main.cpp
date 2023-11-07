@@ -1,11 +1,16 @@
+#include <iostream>
+
+using std::cout;
+using std::endl;
+using std::runtime_error;
+
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "core/entities/baseCommiunicationEntity.h"
-#include "core/entities/plu.h"
+#include "core/include/baseCommiunicationEntity.h"
+#include "core/include/plu.h"
 #include "core/device_driver/matrix_keyboard/keyboard.h"
 #include "esp_timer.h"
-#include "core/device_driver/weight/weight.h"
 #include "core/device_driver/seven_segment_display/seven_segment_display.h"
 #include "core/device_driver/chip_adc/chip_adc.h"
 #include "core/device_driver/commiunication_uart/comm_uart.h"
@@ -14,6 +19,8 @@
 #include "core/device_driver/storage/storage.h"
 #include "core/device_driver/sntp/sntp.h"
 #include "core/device_driver/matrix_keyboard/keyboard.h"
+#include "core/device_driver/adc_ads1232/adc.h"
+#include "features/calibration/calibration.h"
 
 // #include "cJSON.h"
 // #include "esp_log.h"
@@ -26,7 +33,7 @@ extern "C"
   void app_main();
 }
 
-using namespace ADS1232_WEIGHT;
+using namespace ADC_ADS1232;
 using namespace SSEG_DEVICE_DRIVER;
 using namespace CHIP_ADC;
 using namespace COMMIUNICATION_UART;
@@ -35,9 +42,11 @@ using namespace REALTIME_CLOCK;
 using namespace STORAGE;
 using namespace SNTP;
 using namespace MATRIX_KEYBOARD;
+using namespace CALIBRATION;
 
 void app_main(void)
 {
+
   unsigned char keydata = 0, keyState = 0;
   bool keytype = false;
 
@@ -81,11 +90,24 @@ void app_main(void)
   // https://github.com/espressif/esp-idf/tree/master/components/json
 
   Sntp::isRequestedForDateTime = true;
+  Calibration cal;
+
   for (;;)
   {
     Keyboard::readKeyBuffer(keydata, keytype);
-    if (keydata == 1 && keytype == false)
-      Sntp::isRequestedForDateTime = true;
+    try
+    {
+      if (keydata == 1 && keytype == false)
+      {
+        cal.performCalibration(0);
+        //    Sntp::isRequestedForDateTime = true;
+      }
+    }
+    catch (const std::exception &e)
+    {
+      std::cerr << e.what() << '\n';
+    }
+
     if (Sntp::isDateTimeReceived)
     {
       Sntp::isDateTimeReceived = false;
@@ -93,11 +115,11 @@ void app_main(void)
       printf("data = %d-%d-%d , %ld \n", Rtc::Year, Rtc::Month, Rtc::Day, Rtc::Current_Date);
     }
 
-    if (Weight::isWeightReceived)
+    if (Adc::isAdcDataReceived[FIRST_PLATFORM])
     {
       //    printf("%ld\n", Weight::rawAdcNumber);
-      Sseg::Write_Number_To_Display(Weight::rawAdcNumber, TOTAL_PRICE, false, 0, false, false, 8, true, true);
-      Weight::isWeightReceived = 0;
+      Sseg::Write_Number_To_Display(Adc::rawAdc[FIRST_PLATFORM], TOTAL_PRICE, false, 0, false, false, 8, true, true);
+      Adc::isAdcDataReceived[FIRST_PLATFORM] = 0;
       //  printf("DC = %d\n", ChipAdc::DcAdapterVoltage);
       //   printf("BA = %d\n", ChipAdc::BatteryVoltage);
       // sprintf(buf, "--->  data is %d\n", cc);

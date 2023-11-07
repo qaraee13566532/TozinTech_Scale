@@ -9,10 +9,11 @@ namespace CALIBRATION
         Calibration()
         {
         }
+        void performCalibration(unsigned char platformId);
 
     public:
-        unsigned long firstMaxInterval;
-        unsigned long secondMaxInterval;
+        unsigned long firstIntervalMax;
+        unsigned long secondIntervalMax;
         long zeroAtod;
         unsigned long calibrationLoad;
         double weightFactor;

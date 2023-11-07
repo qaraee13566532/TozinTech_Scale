@@ -1,8 +1,8 @@
 
 #pragma once
 
-#include "core/entities/baseCommiunicationEntity.h"
-#include "core/entities/report.h"
+#include "core/include/baseCommiunicationEntity.h"
+#include "core/include/report.h"
 
 namespace COMMIUNICATION
 {

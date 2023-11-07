@@ -1,6 +1,6 @@
 #pragma once
 
-#include "core/entities/baseCommiunicationEntity.h"
+#include "core/include/baseCommiunicationEntity.h"
 
 #define   MAX_PLU_NAME_LENGHT   30
 #define   MAX_BARCODE_LENGHT   30

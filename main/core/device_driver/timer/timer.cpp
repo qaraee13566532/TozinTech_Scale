@@ -2,15 +2,19 @@
 #include "core/device_driver/timer/timer.h"
 #include "esp_timer.h"
 #include "core/device_driver/seven_segment_display/seven_segment_display.h"
-#include "core/device_driver/weight/weight.h"
+#include "core/device_driver/adc_ads1232/adc.h"
 #include "core/device_driver/chip_adc/chip_adc.h"
 #include "core/device_driver/sntp/sntp.h"
 
-using namespace ADS1232_WEIGHT;
+
+
+using namespace ADC_ADS1232;
 using namespace MATRIX_KEYBOARD;
 using namespace SSEG_DEVICE_DRIVER;
 using namespace CHIP_ADC;
 using namespace SNTP;
+
+
 
 namespace GLOBAL_TIMER
 {
@@ -21,7 +25,7 @@ namespace GLOBAL_TIMER
         if (++externalReadAdcTime > 10)
         {
             externalReadAdcTime = 0;
-            Weight::ReadAdcRawData();
+            Adc::ReadAdcRawData();
         }
         if (++chipAdcReadTime > 200)
         {

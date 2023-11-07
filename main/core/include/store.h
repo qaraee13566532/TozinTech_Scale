@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "core/entities/baseCommiunicationEntity.h"
+#include "core/include/baseCommiunicationEntity.h"
 namespace STORE
 {
     class Store : public BaseCommiunicationEntity
