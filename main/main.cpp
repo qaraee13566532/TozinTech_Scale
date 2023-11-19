@@ -20,7 +20,7 @@ using std::runtime_error;
 #include "core/device_driver/sntp/sntp.h"
 #include "core/device_driver/matrix_keyboard/keyboard.h"
 #include "core/device_driver/adc_ads1232/adc.h"
-#include "features/calibration/calibration.h"
+#include "features/weight/calibration/calibration.h"
 
 // #include "cJSON.h"
 // #include "esp_log.h"
@@ -49,6 +49,7 @@ void app_main(void)
 
   unsigned char keydata = 0, keyState = 0;
   bool keytype = false;
+  int cmc=0;
 
   initialize();
 
@@ -90,7 +91,8 @@ void app_main(void)
   // https://github.com/espressif/esp-idf/tree/master/components/json
 
   Sntp::isRequestedForDateTime = true;
-  Calibration cal;
+  Calibration firstPlatform(FIRST_PLATFORM);
+  bool ddd=false;
 
   for (;;)
   {
@@ -99,8 +101,18 @@ void app_main(void)
     {
       if (keydata == 1 && keytype == false)
       {
-        cal.performCalibration(0);
+        firstPlatform.performCalibration();
         //    Sntp::isRequestedForDateTime = true;
+      }
+      if (keydata == 4 && keytype == false)
+      {
+         Adc::useFiltering[FIRST_PLATFORM] = true;
+         ddd=true;
+      }
+      if (keydata == 2 && keytype == false)
+      {
+        Adc::useFiltering[FIRST_PLATFORM] = false;
+        ddd=false;
       }
     }
     catch (const std::exception &e)
@@ -108,17 +120,25 @@ void app_main(void)
       std::cerr << e.what() << '\n';
     }
 
-    if (Sntp::isDateTimeReceived)
-    {
-      Sntp::isDateTimeReceived = false;
-      Rtc::GetDate();
-      printf("data = %d-%d-%d , %ld \n", Rtc::Year, Rtc::Month, Rtc::Day, Rtc::Current_Date);
-    }
+    // if (Sntp::isDateTimeReceived)
+    // {
+    //   Sntp::isDateTimeReceived = false;
+    //   Rtc::GetDate();
+    //   printf("data = %d-%d-%d , %ld \n", Rtc::Year, Rtc::Month, Rtc::Day, Rtc::Current_Date);
+    // }
 
     if (Adc::isAdcDataReceived[FIRST_PLATFORM])
     {
-      //    printf("%ld\n", Weight::rawAdcNumber);
-      Sseg::Write_Number_To_Display(Adc::rawAdc[FIRST_PLATFORM], TOTAL_PRICE, false, 0, false, false, 8, true, true);
+      //printf("%ld,%ld\n",Adc::rawAdc[FIRST_PLATFORM],Adc::filterdRawAdc[FIRST_PLATFORM]);
+      ddd==false ? printf("%ld\n", Adc::rawAdc[FIRST_PLATFORM]) : printf("%ld\n", Adc::filterdRawAdc[FIRST_PLATFORM]);
+      // if(cmc++>14)
+      // {
+      //   cmc=0;
+      //   printf("\n");
+      // }
+      ddd==false ? Sseg::Write_Number_To_Display(Adc::rawAdc[FIRST_PLATFORM], TOTAL_PRICE, false, 0, false, false, 8, true, true) :
+      Sseg::Write_Number_To_Display( Adc::filterdRawAdc[FIRST_PLATFORM], TOTAL_PRICE, false, 0, false, false, 8, true, true);
+      
       Adc::isAdcDataReceived[FIRST_PLATFORM] = 0;
       //  printf("DC = %d\n", ChipAdc::DcAdapterVoltage);
       //   printf("BA = %d\n", ChipAdc::BatteryVoltage);

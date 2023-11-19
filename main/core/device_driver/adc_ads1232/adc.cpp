@@ -31,6 +31,27 @@ namespace ADC_ADS1232
                 }
                 else
                     rawAdc[FIRST_PLATFORM] = realAdcData;
+
+                if (useFiltering[FIRST_PLATFORM] == true)
+                {
+                    medianFilter[FIRST_PLATFORM].in(rawAdc[FIRST_PLATFORM]);
+                    if (labs(medianFilter[FIRST_PLATFORM].getMax() - medianFilter[FIRST_PLATFORM].getMin()) <= filteringRange[FIRST_PLATFORM])
+                        filterdRawAdc[FIRST_PLATFORM] = medianFilter[FIRST_PLATFORM].out();
+                    else
+                        filterdRawAdc[FIRST_PLATFORM] = rawAdc[FIRST_PLATFORM];
+
+                    // filterdRawAdc[FIRST_PLATFORM] = (double)1.2 * lpFilter[FIRST_PLATFORM].filter((double)rawAdc[FIRST_PLATFORM]);
+                    // Adc_Count = 5;
+                    // do
+                    // {
+                    //     adcBuffer[Adc_Count] = adcBuffer[Adc_Count - 1];
+                    //     Adc_Count--;
+                    // } while (Adc_Count > 0);
+                    // adcBuffer[0] = filterdRawAdc[FIRST_PLATFORM];
+                    // for (Adc_Count = 0; Adc_Count < 5; Adc_Count++)
+                    //     finalAdc[FIRST_PLATFORM] += adcBuffer[Adc_Count];
+                    // finalAdc[FIRST_PLATFORM] /= 5;
+                }
             }
             isAdcDataReceived[FIRST_PLATFORM] = true;
         }
@@ -43,12 +64,15 @@ namespace ADC_ADS1232
         ets_delay_us(1);
         gpio_set_level(ADS1232_CLOCK, 0);
     }
-
     void Adc::InitAdc(void)
     {
         unsigned char loopCounter;
         for (loopCounter = 0; loopCounter < 26; loopCounter++)
             MakeAdcClock();
+        useFiltering[FIRST_PLATFORM] = false;
+        lpFilter[FIRST_PLATFORM] = FIR_filter(10, 0.1, 0, "lp", "hamming");
+        filteringRange[FIRST_PLATFORM] = 100000;
+        filteringTaps[FIRST_PLATFORM] = 17;
+        medianFilter[FIRST_PLATFORM] = MedianFilter(filteringTaps[FIRST_PLATFORM], 0);
     }
-
 }

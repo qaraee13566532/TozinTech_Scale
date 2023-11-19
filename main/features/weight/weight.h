@@ -8,11 +8,19 @@ namespace ADS1232_WEIGHT
     class Weight
     {
     public:
-        Weight()
-        {
-        }
-
+        Weight();
+        ~Weight();
+        bool setZero(void);
+        bool setTare(void);
+        bool onHold(void);
+        long calcWeight(void);
+        long roundWeight(void);
+        void filterWeight(void);
+        void removeDrift(void);
+        void removeBlink(void);
+        void checkStability(void);
     public:
+        long netAdc;
         long weight;
         long roundedWeight;
         long netWeight;

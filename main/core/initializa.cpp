@@ -47,5 +47,5 @@ void initialize(void)
     Storage::InitStorage();
     Nvs::InitNvs();
     Wifi::InitWifi(WIFI_STA_MODE);
-    Sntp::InitSntp(true);
+    Sntp::InitSntp(false);
 }
