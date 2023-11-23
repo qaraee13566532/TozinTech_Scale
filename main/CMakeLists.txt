@@ -16,7 +16,8 @@ core/device_driver/storage/storage.cpp
 core/device_driver/sntp/sntp.cpp
 core/device_driver/wifi/wifi.cpp
 core/device_driver/nvs/nvs.cpp
-features/weight/calibration/calibration.cpp
+features/calibration/usecase/calibration.cpp
+features/calibration/ui/calibration_page.cpp
 core/device_driver/adc_ads1232/fir_filter.cpp
 core/device_driver/adc_ads1232/MedianFilter.cpp
 
@@ -41,5 +42,6 @@ core/device_driver/sntp
 core/device_driver/storage
 core/device_driver/commiunication_uart
 core/device_driver/matrix_keyboard  
-features/weight/calibration
+features/calibration/usecase
+features/calibration/ui
 core/device_driver/seven_segment_display)

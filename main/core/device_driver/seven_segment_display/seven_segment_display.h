@@ -51,6 +51,7 @@ namespace SSEG_DEVICE_DRIVER
         static void Write_Message_To_Display(const char *Message, unsigned char displayPart, unsigned char posintion, bool cleanFirst);
         static void BlankDisplayPart(unsigned char displayPart);
         static void Write_Number_To_Display(long long input, unsigned char displayPart, bool showDecimalPoint, unsigned char decimapPointPosition, bool Show_BackZero, bool Show_Front_Zero, unsigned char digitDisplayNumbers, bool alignCenter, bool cleanFirst);
+        static void Scroll_Message(const char *Message, unsigned char displayPart, unsigned char startPos, int delayMS,int returnKeyCode,bool retunKeyState);
     
 
     private:

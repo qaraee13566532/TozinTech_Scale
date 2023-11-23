@@ -1,5 +1,5 @@
 #include <core/device_driver/chip_adc/chip_adc.h>
-#include "core/global_constants.h"
+#include "core/definations.h"
 #include "esp_adc/adc_oneshot.h"
 #include "esp_adc/adc_continuous.h"
 

@@ -1,5 +1,5 @@
 #include <core/device_driver/gpio/gpio.h>
-#include "core/global_constants.h"
+#include "core/definations.h"
 
 namespace GPIO
 {

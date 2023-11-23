@@ -1,9 +1,12 @@
 #include "seven_segment_display.h"
 #include "core/device_driver/gpio/gpio.h"
-#include "core/global_constants.h"
+#include "core/definations.h"
 #include "core/device_driver/seven_segment_display/seven_segment_display.h"
 #include <rom/ets_sys.h>
 #include <string.h>
+#include "core/device_driver/matrix_keyboard/keyboard.h"
+
+using namespace MATRIX_KEYBOARD;
 
 namespace SSEG_DEVICE_DRIVER
 {
@@ -176,9 +179,7 @@ namespace SSEG_DEVICE_DRIVER
         posintion += DisplayPos[displayPart];
         if (posintion > 0)
             posintion--;
-        Len = strlen(Message);
-        // if (Len > DisplayMaxDigitNo[displayPart])
-        //     Len = DisplayMaxDigitNo[displayPart];
+        Len = strlen(Message) > DisplayMaxDigitNo[displayPart] ? DisplayMaxDigitNo[displayPart] : strlen(Message);
         if (cleanFirst == true)
             BlankDisplayPart(displayPart);
         for (loopCnt = 0; loopCnt < Len; loopCnt++)
@@ -235,20 +236,20 @@ namespace SSEG_DEVICE_DRIVER
         {
             dig_dsp = input % 10;
             if (input || Show_BackZero)
-                displayBuffer[dcnt] = Text_Convertion_Table[dig_dsp+'0'];
+                displayBuffer[dcnt] = Text_Convertion_Table[dig_dsp + '0'];
             else
             {
                 if (Show_Front_Zero == 0)
                 {
                     if ((dcnt == DisplayPos[WEIGHT] || dcnt == DisplayPos[TARE] || dcnt == DisplayPos[UNIT_PRICE] || dcnt == DisplayPos[TOTAL_PRICE]) && input == 0)
-                        displayBuffer[dcnt] = Text_Convertion_Table[0+'0'];
+                        displayBuffer[dcnt] = Text_Convertion_Table[0 + '0'];
                     else
                         displayBuffer[dcnt] = DISPOFF;
                 }
                 else
                 {
                     if (dcnt < Show_Front_Zero + DisplayPos[displayPart])
-                        displayBuffer[dcnt] = Text_Convertion_Table[dig_dsp+'0'];
+                        displayBuffer[dcnt] = Text_Convertion_Table[dig_dsp + '0'];
                     else
                         displayBuffer[dcnt] = DISPOFF;
                 }
@@ -264,5 +265,33 @@ namespace SSEG_DEVICE_DRIVER
             if (sign)
                 displayBuffer[pos] |= MINUS;
         } while (dcnt < digitDisplayNumbers + DisplayPos[displayPart]);
+    }
+    void Sseg::Scroll_Message(const char *Message, unsigned char displayPart, unsigned char spaceChar,int delayMS,int returnKeyCode,bool retunKeyState)
+    {
+        unsigned int loopCounter, messageCounter;
+        unsigned char keydata = 0;
+        bool  keytype = false;
+        size_t Len;
+        unsigned char swap;
+        Len = strlen(Message);
+        char *messageData = (char *)malloc(Len + spaceChar);
+        strncpy(messageData, Message, Len);
+        for (loopCounter = 0; loopCounter < spaceChar; loopCounter++)
+            *(messageData + loopCounter + Len) = ' ';
+        for (;;)
+        {
+            Write_Message_To_Display(messageData, displayPart, 8, true);
+            swap = *messageData;
+            for (messageCounter = 0; messageCounter < Len+spaceChar; messageCounter++)
+                *(messageData + messageCounter) = *(messageData + messageCounter + 1);
+            *(messageData + Len + spaceChar - 1) = swap;
+            DELAY(delayMS);
+            Keyboard::readKeyBuffer(keydata, keytype);
+            if (keydata == returnKeyCode && keytype == retunKeyState)
+            {
+                BlankDisplayPart(displayPart);
+                return;
+            }
+        }
     }
 }
