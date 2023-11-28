@@ -33,7 +33,7 @@ void initialize(void)
     
     Gpio::InitGpio();
     Keyboard::InitKeyboard();
-    Sseg::InitDisplay(7);
+    Sseg::InitDisplay(1);
     Timer::InitTimer();
     Sseg::DialpayStart();
     ChipAdc::InitChipAdc();

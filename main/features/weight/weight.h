@@ -9,7 +9,6 @@ namespace ADS1232_WEIGHT
     {
     public:
         Weight();
-        ~Weight();
         bool setZero(void);
         bool setTare(void);
         bool onHold(void);

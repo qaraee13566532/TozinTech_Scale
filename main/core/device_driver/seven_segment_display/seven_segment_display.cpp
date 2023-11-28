@@ -4,8 +4,15 @@
 #include "core/device_driver/seven_segment_display/seven_segment_display.h"
 #include <rom/ets_sys.h>
 #include <string.h>
+#include <stdio.h>
 #include "core/device_driver/matrix_keyboard/keyboard.h"
+#include <iostream>
+#include <sstream>
+#include <string>
 
+using std::cout;
+using std::endl;
+using std::string;
 using namespace MATRIX_KEYBOARD;
 
 namespace SSEG_DEVICE_DRIVER
@@ -170,7 +177,7 @@ namespace SSEG_DEVICE_DRIVER
         for (loopCounter = 0; loopCounter < digitNumber; loopCounter++)
             displayBuffer[loopCounter] = 0;
     }
-    void Sseg::Write_Message_To_Display(const char *Message, unsigned char displayPart, unsigned char posintion, bool cleanFirst)
+    void Sseg::Write_Message_To_Display(string Message, unsigned char displayPart, unsigned char posintion, bool cleanFirst)
     {
         unsigned int loopCnt, DispCnt = 0, pointPos = 0;
         size_t Len;
@@ -179,12 +186,13 @@ namespace SSEG_DEVICE_DRIVER
         posintion += DisplayPos[displayPart];
         if (posintion > 0)
             posintion--;
-        Len = strlen(Message) > DisplayMaxDigitNo[displayPart] ? DisplayMaxDigitNo[displayPart] : strlen(Message);
+        pointPos = posintion;
+        Len = Message.length() > DisplayMaxDigitNo[displayPart] ? DisplayMaxDigitNo[displayPart] : Message.length();
         if (cleanFirst == true)
             BlankDisplayPart(displayPart);
         for (loopCnt = 0; loopCnt < Len; loopCnt++)
         {
-            data = *(Message + loopCnt);
+            data = Message.at(loopCnt);
             if (DispCnt < DisplayMaxDigitNo[displayPart])
             {
                 if (data != '.')
@@ -197,6 +205,14 @@ namespace SSEG_DEVICE_DRIVER
                     displayBuffer[pointPos] |= POINT;
             }
         }
+    }
+    void Sseg::SetDispBuffer(unsigned char index, unsigned char data)
+    {
+        displayBuffer[index] = data;
+    }
+    unsigned char Sseg::ReadDisplayBuffer(unsigned char index)
+    {
+        return  displayBuffer[index];
     }
     void Sseg::BlankDisplayPart(unsigned char displayPart)
     {
@@ -266,32 +282,122 @@ namespace SSEG_DEVICE_DRIVER
                 displayBuffer[pos] |= MINUS;
         } while (dcnt < digitDisplayNumbers + DisplayPos[displayPart]);
     }
-    void Sseg::Scroll_Message(const char *Message, unsigned char displayPart, unsigned char spaceChar,int delayMS,int returnKeyCode,bool retunKeyState)
+    void Sseg::Scroll_Message(const char *Message, unsigned char displayPart, unsigned char spaceChar, int delayMS, int returnKeyCode, bool retunKeyState, bool exitIfCompleted)
     {
         unsigned int loopCounter, messageCounter;
         unsigned char keydata = 0;
-        bool  keytype = false;
+        bool keytype = false;
         size_t Len;
         unsigned char swap;
+        bool isCompleted = false;
         Len = strlen(Message);
+        if (exitIfCompleted == true)
+            spaceChar = DisplayMaxDigitNo[displayPart];
         char *messageData = (char *)malloc(Len + spaceChar);
-        strncpy(messageData, Message, Len);
         for (loopCounter = 0; loopCounter < spaceChar; loopCounter++)
-            *(messageData + loopCounter + Len) = ' ';
+            *(messageData + loopCounter) = ' ';
+        *(messageData + loopCounter) = 0;
+        strncat(messageData, Message, Len);
+        loopCounter = 0;
         for (;;)
         {
-            Write_Message_To_Display(messageData, displayPart, 8, true);
+            Write_Message_To_Display(messageData, displayPart, DisplayMaxDigitNo[displayPart], true);
             swap = *messageData;
-            for (messageCounter = 0; messageCounter < Len+spaceChar; messageCounter++)
+            for (messageCounter = 0; messageCounter < Len + spaceChar; messageCounter++)
                 *(messageData + messageCounter) = *(messageData + messageCounter + 1);
             *(messageData + Len + spaceChar - 1) = swap;
-            DELAY(delayMS);
-            Keyboard::readKeyBuffer(keydata, keytype);
-            if (keydata == returnKeyCode && keytype == retunKeyState)
+
+            if (exitIfCompleted == true)
             {
-                BlankDisplayPart(displayPart);
-                return;
+                DELAY(delayMS);
+                loopCounter++;
+                if (loopCounter == spaceChar && isCompleted == false)
+                    isCompleted = true;
+                if (loopCounter == (spaceChar + Len) && isCompleted == true)
+                {
+                    BlankDisplayPart(displayPart);
+                    return;
+                }
             }
+            else
+            {
+                for (loopCounter = 0; loopCounter < delayMS; loopCounter++)
+                {
+                    DELAY(1);
+                    Keyboard::readKeyBuffer(keydata, keytype);
+                    if (keydata == returnKeyCode && keytype == retunKeyState)
+                    {
+                        BlankDisplayPart(displayPart);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    void Sseg::viewScrollMessage(string &Message, unsigned char displayPart, int delayMS)
+    {
+        unsigned int messageCounter;
+        static int delayTime;
+        size_t Len;
+        unsigned char swap;
+
+        if (delayTime == delayMS)
+        {
+            delayTime = 0;
+            Len = Message.length();
+            Write_Message_To_Display(Message, displayPart, DisplayMaxDigitNo[displayPart], true);
+            swap = Message[0];
+            for (messageCounter = 0; messageCounter < Len; messageCounter++)
+                Message[messageCounter] = Message[messageCounter + 1];
+            Message[Len - 1] = swap;
+        }
+        else
+        {
+            DELAY(1);
+            delayTime++;
+        }
+    }
+    void Sseg::getNumber(string &digitsBuffer, unsigned char &keyCode, unsigned char &digitIndex, unsigned long Max)
+    {
+        unsigned long addValue = 0;
+        long number = 0, powerNumber = 0;
+        std::istringstream(digitsBuffer) >> number;
+
+        switch (keyCode)
+        {
+        case KEY_NUMBER_0:
+        case KEY_NUMBER_1:
+        case KEY_NUMBER_2:
+        case KEY_NUMBER_3:
+        case KEY_NUMBER_4:
+        case KEY_NUMBER_5:
+        case KEY_NUMBER_6:
+        case KEY_NUMBER_7:
+        case KEY_NUMBER_8:
+        case KEY_NUMBER_9:
+            number *= 10;
+            number += englishKeyMap[keyCode];
+            if (number > Max)
+                number = englishKeyMap[keyCode];
+            digitsBuffer = std::to_string(number);
+            keyCode = KEY_ZERO;
+            break;
+        case KEY_ZERO:
+            powerNumber = pow(10, digitIndex + 1);
+            addValue = (number % powerNumber);
+            powerNumber = pow(10, digitIndex);
+            addValue /= powerNumber;
+            if (addValue < 9)
+                number += powerNumber;
+            else
+                number -= 9 * powerNumber;
+            digitsBuffer = std::to_string(number);
+            break;
+        case KEY_CLEAR:
+            digitsBuffer[0] = 0;
+            keyCode = KEY_ZERO;
+            digitIndex = 0;
+            break;
         }
     }
 }
