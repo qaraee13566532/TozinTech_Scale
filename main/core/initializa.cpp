@@ -12,7 +12,7 @@
 #include "core/device_driver/wifi/wifi.h"
 #include "core/device_driver/nvs/nvs.h"
 #include "core/device_driver/sntp/sntp.h"
-
+#include "definations.h"
 
 using namespace SSEG_DEVICE_DRIVER;
 using namespace GLOBAL_TIMER;
@@ -27,15 +27,14 @@ using namespace WIFI;
 using namespace NVS;
 using namespace SNTP;
 
-
 void initialize(void)
 {
-    
+
     Gpio::InitGpio();
     Keyboard::InitKeyboard();
     Sseg::InitDisplay(1);
-    Timer::InitTimer();
     Sseg::DialpayStart();
+    Timer::InitTimer();
     ChipAdc::InitChipAdc();
     Adc::InitAdc();
     CommiunicationUart::InitCommUart();
@@ -46,6 +45,7 @@ void initialize(void)
     Sseg::Write_Message_To_Display("VEr-1.00", TOTAL_PRICE, 7, true);
     Storage::InitStorage();
     Nvs::InitNvs();
-    Wifi::InitWifi(WIFI_STA_MODE);
-    Sntp::InitSntp(false);
+    //Wifi::InitWifi(WIFI_STA_MODE);
+    // Sntp::InitSntp(false);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
 }

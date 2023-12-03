@@ -9,16 +9,19 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include "core/device_driver/timer/timer.h"
 
 using std::cout;
 using std::endl;
+using std::istringstream;
 using std::string;
+
 using namespace MATRIX_KEYBOARD;
+using namespace GLOBAL_TIMER;
 
 namespace SSEG_DEVICE_DRIVER
 {
-
-    void Sseg::StartBus(unsigned char chipNumber)
+    void Sseg::StartBus(uint8_t chipNumber)
     {
         switch (chipNumber)
         {
@@ -37,7 +40,7 @@ namespace SSEG_DEVICE_DRIVER
         gpio_set_level(TM1640_DATA, HICH_LEVEL);
         ets_delay_us(1);
     }
-    void Sseg::StopBus(unsigned char chipNumber)
+    void Sseg::StopBus(uint8_t chipNumber)
     {
         switch (chipNumber)
         {
@@ -56,7 +59,7 @@ namespace SSEG_DEVICE_DRIVER
         gpio_set_level(TM1640_DATA, LOW_LEVEL);
         ets_delay_us(1);
     }
-    void Sseg::WriteToTM1640(unsigned int Data, unsigned char chipNumber)
+    void Sseg::WriteToTM1640(uint16_t Data, uint8_t chipNumber)
     {
         uint8_t LoopCnt;
         for (LoopCnt = 0; LoopCnt < 8; LoopCnt++)
@@ -80,16 +83,16 @@ namespace SSEG_DEVICE_DRIVER
             ets_delay_us(2);
         }
     }
-    void Sseg::ClearTM1640(unsigned char chipNumber)
+    void Sseg::ClearTM1640(uint8_t chipNumber)
     {
-        unsigned char loopCnt = 0;
+        uint8_t loopCnt = 0;
         StartBus(chipNumber);
         WriteToTM1640(0xC0, chipNumber);
         for (loopCnt = 0; loopCnt < 16; ++loopCnt)
             WriteToTM1640(0x00, chipNumber);
         StopBus(chipNumber);
     }
-    void Sseg::InitDisplay(unsigned char intensity)
+    void Sseg::InitDisplay(uint8_t intensity)
     {
 
         isPriceComputing = true;
@@ -125,7 +128,7 @@ namespace SSEG_DEVICE_DRIVER
     }
     void Sseg::DialpayStop(void)
     {
-        unsigned char loopCounter = 0;
+        uint8_t loopCounter = 0;
         for (loopCounter = 0; loopCounter < MAX_DISPLAY_DIGITS; loopCounter++)
             displayBuffer[loopCounter] = 0x00;
         enableRefresh = false;
@@ -169,7 +172,7 @@ namespace SSEG_DEVICE_DRIVER
     }
     void Sseg::BlankDisplay(void)
     {
-        unsigned char loopCounter = 0, digitNumber;
+        uint8_t loopCounter = 0, digitNumber;
         if (isPriceComputing == true)
             digitNumber = 32;
         else
@@ -177,11 +180,11 @@ namespace SSEG_DEVICE_DRIVER
         for (loopCounter = 0; loopCounter < digitNumber; loopCounter++)
             displayBuffer[loopCounter] = 0;
     }
-    void Sseg::Write_Message_To_Display(string Message, unsigned char displayPart, unsigned char posintion, bool cleanFirst)
+    void Sseg::Write_Message_To_Display(string Message, uint8_t displayPart, uint8_t posintion, bool cleanFirst)
     {
-        unsigned int loopCnt, DispCnt = 0, pointPos = 0;
+        uint16_t loopCnt, DispCnt = 0, pointPos = 0;
         size_t Len;
-        unsigned char data = 0;
+        uint8_t data = 0;
 
         posintion += DisplayPos[displayPart];
         if (posintion > 0)
@@ -206,25 +209,25 @@ namespace SSEG_DEVICE_DRIVER
             }
         }
     }
-    void Sseg::SetDispBuffer(unsigned char index, unsigned char data)
+    void Sseg::SetDispBuffer(uint8_t index, uint8_t data)
     {
         displayBuffer[index] = data;
     }
-    unsigned char Sseg::ReadDisplayBuffer(unsigned char index)
+    uint8_t Sseg::ReadDisplayBuffer(uint8_t index)
     {
-        return  displayBuffer[index];
+        return displayBuffer[index];
     }
-    void Sseg::BlankDisplayPart(unsigned char displayPart)
+    void Sseg::BlankDisplayPart(uint8_t displayPart)
     {
-        unsigned int loopCnt, posintion;
+        uint16_t loopCnt, posintion;
         posintion = DisplayPos[displayPart];
         for (loopCnt = 0; loopCnt < DisplayMaxDigitNo[displayPart]; loopCnt++)
             displayBuffer[posintion + loopCnt] = 0;
     }
-    void Sseg::Write_Number_To_Display(long long input, unsigned char displayPart, bool showDecimalPoint, unsigned char decimapPointPosition, bool Show_BackZero, bool Show_Front_Zero, unsigned char digitDisplayNumbers, bool alignCenter, bool cleanFirst)
+    void Sseg::Write_Number_To_Display(int32_t input, uint8_t displayPart, bool showDecimalPoint, uint8_t decimapPointPosition, bool Show_BackZero, bool Show_Front_Zero, uint8_t digitDisplayNumbers, bool alignCenter, bool cleanFirst)
     {
-        unsigned char dcnt, dig_dsp, len = 0, pos;
-        long long temp_input;
+        uint8_t dcnt, dig_dsp, len = 0, pos;
+        int32_t temp_input;
         if (alignCenter == true)
         {
             temp_input = input;
@@ -282,30 +285,28 @@ namespace SSEG_DEVICE_DRIVER
                 displayBuffer[pos] |= MINUS;
         } while (dcnt < digitDisplayNumbers + DisplayPos[displayPart]);
     }
-    void Sseg::Scroll_Message(const char *Message, unsigned char displayPart, unsigned char spaceChar, int delayMS, int returnKeyCode, bool retunKeyState, bool exitIfCompleted)
+    void Sseg::Scroll_Message(string Message, uint8_t displayPart, uint8_t spaceChar, int16_t delayMS, int16_t returnKeyCode, bool retunKeyState, bool exitIfCompleted)
     {
-        unsigned int loopCounter, messageCounter;
-        unsigned char keydata = 0;
+        uint16_t loopCounter, messageCounter;
+        uint8_t keydata = 0;
         bool keytype = false;
         size_t Len;
-        unsigned char swap;
+        uint8_t swap;
         bool isCompleted = false;
-        Len = strlen(Message);
+        Len = Message.length();
         if (exitIfCompleted == true)
             spaceChar = DisplayMaxDigitNo[displayPart];
-        char *messageData = (char *)malloc(Len + spaceChar);
-        for (loopCounter = 0; loopCounter < spaceChar; loopCounter++)
-            *(messageData + loopCounter) = ' ';
-        *(messageData + loopCounter) = 0;
-        strncat(messageData, Message, Len);
+        string messageData(spaceChar, ' ');
+        messageData += Message;
+
         loopCounter = 0;
         for (;;)
         {
             Write_Message_To_Display(messageData, displayPart, DisplayMaxDigitNo[displayPart], true);
-            swap = *messageData;
+            swap = messageData[0];
             for (messageCounter = 0; messageCounter < Len + spaceChar; messageCounter++)
-                *(messageData + messageCounter) = *(messageData + messageCounter + 1);
-            *(messageData + Len + spaceChar - 1) = swap;
+                messageData[messageCounter] = messageData[messageCounter + 1];
+            messageData[Len + spaceChar - 1] = swap;
 
             if (exitIfCompleted == true)
             {
@@ -334,16 +335,15 @@ namespace SSEG_DEVICE_DRIVER
             }
         }
     }
-    void Sseg::viewScrollMessage(string &Message, unsigned char displayPart, int delayMS)
+    void Sseg::viewScrollMessage(string &Message, uint8_t displayPart, int16_t delayMS)
     {
-        unsigned int messageCounter;
-        static int delayTime;
+        uint16_t messageCounter;
         size_t Len;
-        unsigned char swap;
+        uint8_t swap;
 
-        if (delayTime == delayMS)
+        if (Timer::AuxfreeRuningTimerMS == 0)
         {
-            delayTime = 0;
+            Timer::AuxfreeRuningTimerMS = delayMS;
             Len = Message.length();
             Write_Message_To_Display(Message, displayPart, DisplayMaxDigitNo[displayPart], true);
             swap = Message[0];
@@ -351,17 +351,12 @@ namespace SSEG_DEVICE_DRIVER
                 Message[messageCounter] = Message[messageCounter + 1];
             Message[Len - 1] = swap;
         }
-        else
-        {
-            DELAY(1);
-            delayTime++;
-        }
     }
-    void Sseg::getNumber(string &digitsBuffer, unsigned char &keyCode, unsigned char &digitIndex, unsigned long Max)
+    void Sseg::getNumber(string &digitsBuffer, uint8_t &keyCode, uint8_t &digitIndex, uint32_t Max)
     {
-        unsigned long addValue = 0;
-        long number = 0, powerNumber = 0;
-        std::istringstream(digitsBuffer) >> number;
+        uint32_t addValue = 0;
+        int32_t number = 0, powerNumber = 0;
+        istringstream(digitsBuffer) >> number;
 
         switch (keyCode)
         {
@@ -398,6 +393,28 @@ namespace SSEG_DEVICE_DRIVER
             keyCode = KEY_ZERO;
             digitIndex = 0;
             break;
+        }
+    }
+    void Sseg::ResetBlinkTimer(uint16_t delayMS)
+    {
+        Timer::freeRuningTimerMS = delayMS;
+    }
+    void Sseg::BlinkDigit(uint8_t &digitIndex, uint8_t displayPart, uint8_t blinkDigit, uint16_t delayMS)
+    {
+        static bool visibleDigit = false;
+        if (Timer::freeRuningTimerMS == 0)
+        {
+            if (visibleDigit == false)
+            {
+                visibleDigit = true;
+                SetDispBuffer(DisplayPos[displayPart] + digitIndex, blinkDigit);
+            }
+            else
+            {
+                visibleDigit = false;
+                SetDispBuffer(DisplayPos[displayPart] + digitIndex, 0);
+            }
+            Timer::freeRuningTimerMS = delayMS;
         }
     }
 }

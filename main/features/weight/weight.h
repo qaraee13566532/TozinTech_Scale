@@ -12,20 +12,20 @@ namespace ADS1232_WEIGHT
         bool setZero(void);
         bool setTare(void);
         bool onHold(void);
-        long calcWeight(void);
-        long roundWeight(void);
+        int32_t calcWeight(void);
+        int32_t roundWeight(void);
         void filterWeight(void);
         void removeDrift(void);
         void removeBlink(void);
         void checkStability(void);
     public:
-        long netAdc;
-        long weight;
-        long roundedWeight;
-        long netWeight;
-        unsigned int firstAccuracy;
-        unsigned int secondAccuracy;
-        unsigned long taredWeight;
+        int32_t netAdc;
+        int32_t weight;
+        int32_t roundedWeight;
+        int32_t netWeight;
+        uint16_t firstAccuracy;
+        uint16_t secondAccuracy;
+        uint32_t taredWeight;
         bool isWeightReceived;
         bool isTareRequested;
         bool isWeightStable;
@@ -38,10 +38,10 @@ namespace ADS1232_WEIGHT
         bool isUnderWeight;
         bool isAdcNegative;
         bool isWeightDrifted;
-        long inputWeightBuffer[MAX_WEIGHT_BUFFER_LENGHT];
-        unsigned char stableAccuracyExtent;
-        unsigned int stableTimeExtent;
-        unsigned char filterSensitivity;
+        int32_t inputWeightBuffer[MAX_WEIGHT_BUFFER_LENGHT];
+        uint8_t stableAccuracyExtent;
+        uint16_t stableTimeExtent;
+        uint8_t filterSensitivity;
         bool isAccuracyOneGram;
     };
 }

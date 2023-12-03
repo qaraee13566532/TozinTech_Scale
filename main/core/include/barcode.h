@@ -37,10 +37,10 @@ namespace BARCODE
         }
 
     public:
-        int Code;
+        int16_t Code;
         BarcodeStandards barcodeStandard;
-        int TemplateID;
-        char *Format;
-        int *Description;
+        int16_t TemplateID;
+        int8_t *Format;
+        int16_t *Description;
     };
 }

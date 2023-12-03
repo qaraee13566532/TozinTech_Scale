@@ -13,11 +13,11 @@ public:
     {
     }
 
-    char *sourceIP;
-    char *destIP;
-    unsigned int serverPort;
-    unsigned int devicePort;
-    unsigned long id;
-    unsigned char type;
-    char *identifier;
+    int8_t *sourceIP;
+    int8_t *destIP;
+    uint16_t serverPort;
+    uint16_t devicePort;
+    uint32_t id;
+    uint8_t type;
+    int8_t *identifier;
 };

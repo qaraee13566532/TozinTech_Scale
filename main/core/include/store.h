@@ -15,9 +15,9 @@ namespace STORE
         }
 
     public:
-        unsigned int code;
-        int *description;
-        char *phone;
-        int *name;
+        uint16_t code;
+        int16_t *description;
+        int8_t *phone;
+        int16_t *name;
     };
 }

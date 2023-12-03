@@ -6,15 +6,11 @@
 #include "core/device_driver/chip_adc/chip_adc.h"
 #include "core/device_driver/sntp/sntp.h"
 
-
-
 using namespace ADC_ADS1232;
 using namespace MATRIX_KEYBOARD;
 using namespace SSEG_DEVICE_DRIVER;
 using namespace CHIP_ADC;
 using namespace SNTP;
-
-
 
 namespace GLOBAL_TIMER
 {
@@ -48,6 +44,10 @@ namespace GLOBAL_TIMER
         }
         else
             requestDateTime = 0;
+        if (freeRuningTimerMS > 0)
+            freeRuningTimerMS--;
+        if (AuxfreeRuningTimerMS > 0)
+            AuxfreeRuningTimerMS--;
     }
 
     void Timer::InitTimer(void)

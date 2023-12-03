@@ -3,6 +3,8 @@
 #include "driver/uart.h"
 #include "core/device_driver/gpio/gpio.h"
 #include "string.h"
+#include <iostream>
+using std::string;
 
 
 namespace COMMIUNICATION_UART
@@ -18,12 +20,12 @@ namespace COMMIUNICATION_UART
         uart_driver_install(UART_NUM_0, 2048, 2048, 0, NULL, 0);
         uart_param_config(UART_NUM_0, &uart_config);
         uart_set_pin(UART_NUM_0, GPIO_NUM_43, GPIO_NUM_44, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
-        received_buffer = (unsigned char *)malloc(1024 + 1);
+        received_buffer = (uint8_t *)malloc(1024 + 1);
     }
 
-    void CommiunicationUart::CommTransmitData(char *data)
+    void CommiunicationUart::CommTransmitData(string data)
     {
-        uart_write_bytes(UART_NUM_0, data, strlen(data));
+        uart_write_bytes(UART_NUM_0, &data, data.length());
     }
 
     void CommiunicationUart::CommReceiveData(void)

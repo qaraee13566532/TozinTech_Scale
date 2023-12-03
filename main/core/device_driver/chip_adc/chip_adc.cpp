@@ -3,6 +3,8 @@
 #include "esp_adc/adc_oneshot.h"
 #include "esp_adc/adc_continuous.h"
 
+#include <iostream>
+
 namespace CHIP_ADC
 {
     void ChipAdc::InitChipAdc(void)
@@ -16,12 +18,12 @@ namespace CHIP_ADC
     }
     void ChipAdc::internal_adc_tasks(void)
     {
-        unsigned int value = 0;
+        uint16_t value = 0;
         ESP_ERROR_CHECK(adc_oneshot_read(adc1_handle, DC_SAMPLE_CHANNEL, (int *)&value));
         DcAdapterVoltage = value;
-        DcAdapterVoltage = (DcAdapterVoltage * (unsigned long)178200) / (unsigned long)61425;
+        DcAdapterVoltage = (DcAdapterVoltage * (uint32_t)178200) / (uint32_t)61425;
         ESP_ERROR_CHECK(adc_oneshot_read(adc1_handle, BATTERY_SAMPLE_CHANNEL, (int *)&value));
         BatteryVoltage = value;
-        BatteryVoltage = (BatteryVoltage * (unsigned long)178200) / (unsigned long)61425;
+        BatteryVoltage = (BatteryVoltage * (uint32_t)178200) / (uint32_t)61425;
     }
 }

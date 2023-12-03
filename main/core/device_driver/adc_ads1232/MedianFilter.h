@@ -13,7 +13,7 @@
   Lesser General Public License for more details.
 
   You should have received a copy of the GNU Lesser General Public
-  License along with this library; if not, write to the Free Software
+  License aint32_t with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
@@ -31,30 +31,32 @@
 
 #pragma once
 
+#include <iostream>
+
 class MedianFilter
 {
 public:
-   MedianFilter(long size, long seed);
+   MedianFilter(int32_t size, int32_t seed);
    MedianFilter()
    {
    }
    ~MedianFilter();
-   long in(long value);
-   long out();
+   int32_t in(int32_t value);
+   int32_t out();
 
-   long getMin();
-   long getMax();
-   long getMean();
-   long getStDev();
-   unsigned char Constrain(unsigned char value, unsigned char min_val, unsigned char max_val);
+   int32_t getMin();
+   int32_t getMax();
+   int32_t getMean();
+   int32_t getStDev();
+   uint8_t Constrain(uint8_t value, uint8_t min_val, uint8_t max_val);
 
 private:
-   unsigned char medFilterWin;   // number of samples in sliding median filter window - usually odd #
-   unsigned char medDataPointer; // mid point of window
-   long *data;
-   long *sortedData;              // array pointer for data sorted by age in ring buffer
-   unsigned char *sizeMap;        // array pointer for locations data in sorted by size
-   unsigned char *locationMap;    // array pointer for data locations in history map
-   unsigned char oldestDataPoint; // oldest data point location in ring buffer
-   long totalSum;
+   uint8_t medFilterWin;   // number of samples in sliding median filter window - usually odd #
+   uint8_t medDataPointer; // mid point16_t of window
+   int32_t *data;
+   int32_t *sortedData;              // array pointer for data sorted by age in ring buffer
+   uint8_t *sizeMap;        // array pointer for locations data in sorted by size
+   uint8_t *locationMap;    // array pointer for data locations in history map
+   uint8_t oldestDataPoint; // oldest data point16_t location in ring buffer
+   int32_t totalSum;
 };

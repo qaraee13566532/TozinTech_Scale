@@ -15,7 +15,7 @@ namespace CHIP_ADC
         static inline adc_oneshot_unit_handle_t adc1_handle;
         static inline adc_oneshot_chan_cfg_t config;
     public:
-        static inline unsigned int DcAdapterVoltage, BatteryVoltage;
+        static inline uint16_t DcAdapterVoltage, BatteryVoltage;
 
     public:
         static void InitChipAdc(void);

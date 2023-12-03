@@ -13,7 +13,7 @@
    Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public
-   License along with this library; if not, write to the Free Software
+   License aint32_t with this library; if not, write to the Free Software
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
@@ -40,8 +40,9 @@
 #include "core/device_driver/adc_ads1232/MedianFilter.h"
 #include "stdlib.h"
 #include "math.h"
+#include <iostream>
 
-unsigned char MedianFilter::Constrain(unsigned char value, unsigned char min_val, unsigned char max_val)
+uint8_t MedianFilter::Constrain(uint8_t value, uint8_t min_val, uint8_t max_val)
 {
    if (value < min_val)
       value = min_val;
@@ -54,18 +55,18 @@ unsigned char MedianFilter::Constrain(unsigned char value, unsigned char min_val
    return value;
 }
 
-MedianFilter::MedianFilter(long size, long seed)
+MedianFilter::MedianFilter(int32_t size, int32_t seed)
 {
    medFilterWin = Constrain(size, 3, 31); // number of samples in sliding median filter window - usually odd #
    medDataPointer = size >> 1;
-   sortedData = (long *)calloc(size, sizeof(long));                    // mid point of window
-   data = (long *)calloc(size, sizeof(long));                          // array for data
-   sizeMap = (unsigned char *)calloc(size, sizeof(unsigned char));     // array for locations of data in sorted list
-   locationMap = (unsigned char *)calloc(size, sizeof(unsigned char)); // array for locations of history data in map list
-   oldestDataPoint = medDataPointer;                                   // oldest data point location in data array
+   sortedData = (int32_t *)calloc(size, sizeof(long));                    // mid point16_t of window
+   data = (int32_t *)calloc(size, sizeof(long));                          // array for data
+   sizeMap = (uint8_t *)calloc(size, sizeof(uint8_t));     // array for locations of data in sorted list
+   locationMap = (uint8_t *)calloc(size, sizeof(uint8_t)); // array for locations of history data in map list
+   oldestDataPoint = medDataPointer;                                   // oldest data point16_t location in data array
    totalSum = size * seed;                                             // total of all values
 
-   for (unsigned char i = 0; i < medFilterWin; i++) // initialize the arrays
+   for (uint8_t i = 0; i < medFilterWin; i++) // initialize the arrays
    {
       sizeMap[i] = i;     // start map with straight run
       locationMap[i] = i; // start map with straight run
@@ -83,10 +84,10 @@ MedianFilter::~MedianFilter()
    free(locationMap);
 }
 
-long MedianFilter::in(long value)
+int32_t MedianFilter::in(int32_t value)
 {
-   long temp;
-   unsigned char loopCounter, k, min;
+   int32_t temp;
+   uint8_t loopCounter, k, min;
    loopCounter = medFilterWin - 1;
    do
    {
@@ -122,34 +123,34 @@ long MedianFilter::in(long value)
    return labs(sortedData[medFilterWin - 1] - sortedData[0]);
 }
 
-long MedianFilter::out() // return the value of the median data sample
+int32_t MedianFilter::out() // return the value of the median data sample
 {
    return sortedData[medFilterWin / 2];
 }
 
-long MedianFilter::getMin()
+int32_t MedianFilter::getMin()
 {
    return sortedData[0];
 }
 
-long MedianFilter::getMax()
+int32_t MedianFilter::getMax()
 {
    return sortedData[medFilterWin - 1];
 }
 
-long MedianFilter::getMean()
+int32_t MedianFilter::getMean()
 {
    return totalSum / medFilterWin;
 }
 
-long MedianFilter::getStDev() // Arduino run time [us]: filterSize * 2 + 131
+int32_t MedianFilter::getStDev() // Arduino run time [us]: filterSize * 2 + 131
 {
-   long diffSquareSum = 0;
-   long mean = getMean();
+   int32_t diffSquareSum = 0;
+   int32_t mean = getMean();
 
-   for (long i = 0; i < medFilterWin; i++)
+   for (int32_t i = 0; i < medFilterWin; i++)
    {
-      long diff = sortedData[i] - mean;
+      int32_t diff = sortedData[i] - mean;
       diffSquareSum += diff * diff;
    }
 
@@ -160,7 +161,7 @@ long MedianFilter::getStDev() // Arduino run time [us]: filterSize * 2 + 131
 /*
 void MedianFilter::printData() // display sorting data for debugging
 {
-   for(int i=0; i<medFilterWin; i++)
+   for(int16_t i=0; i<medFilterWin; i++)
    {
       Serial.print(data[i]);
       Serial.print("\t");
@@ -170,7 +171,7 @@ void MedianFilter::printData() // display sorting data for debugging
 
 void MedianFilter::printSizeMap()
 {
-   for(int i=0; i<medFilterWin; i++)
+   for(int16_t i=0; i<medFilterWin; i++)
    {
       Serial.print(sizeMap[i]);
       Serial.print("\t");
@@ -180,7 +181,7 @@ void MedianFilter::printSizeMap()
 
 void MedianFilter::printLocationMap()
 {
-   for(int i=0; i<medFilterWin; i++)
+   for(int16_t i=0; i<medFilterWin; i++)
    {
       Serial.print(locationMap[i]);
       Serial.print("\t");
@@ -190,7 +191,7 @@ void MedianFilter::printLocationMap()
 
 void MedianFilter::printSortedData() // display data for debugging
 {
-   for(int i=0; i<medFilterWin; i++)
+   for(int16_t i=0; i<medFilterWin; i++)
    {
       Serial.print(data[sizeMap[i]]);
       Serial.print("\t");

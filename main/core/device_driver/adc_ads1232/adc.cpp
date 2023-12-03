@@ -7,8 +7,8 @@ namespace ADC_ADS1232
 {
     void Adc::ReadAdcRawData(void)
     {
-        int Adc_Count;
-        long realAdcData;
+        int16_t Adc_Count;
+        int32_t realAdcData;
         if (gpio_get_level(ADS1232_DATA) == 0)
         {
             realAdcData = 0;
@@ -56,7 +56,6 @@ namespace ADC_ADS1232
             isAdcDataReceived[FIRST_PLATFORM] = true;
         }
     }
-
     void Adc::MakeAdcClock(void)
     {
         ets_delay_us(1);
@@ -66,11 +65,11 @@ namespace ADC_ADS1232
     }
     void Adc::InitAdc(void)
     {
-        unsigned char loopCounter;
+        uint8_t loopCounter;
         for (loopCounter = 0; loopCounter < 26; loopCounter++)
             MakeAdcClock();
         useFiltering[FIRST_PLATFORM] = false;
-        lpFilter[FIRST_PLATFORM] = FIR_filter(10, 0.1, 0, "lp", "hamming");
+    //    lpFilter[FIRST_PLATFORM] = FIR_filter(10, 0.1, 0, (int8_t*)"lp", (int8_t*)"hamming");
         filteringRange[FIRST_PLATFORM] = 100000;
         filteringTaps[FIRST_PLATFORM] = 17;
         medianFilter[FIRST_PLATFORM] = MedianFilter(filteringTaps[FIRST_PLATFORM], 0);

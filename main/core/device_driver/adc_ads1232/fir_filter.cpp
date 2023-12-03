@@ -9,8 +9,8 @@ static double sinc(const double x)
     return sin(M_PI * x) / (M_PI * x);
 }
 
-FIR_filter::FIR_filter(int taps, double f1, double f2, const char *type,
-                       const char *window) : h(taps, 0), samples(taps, 0)
+FIR_filter::FIR_filter(int16_t taps, double f1, double f2,  int8_t *type,
+                        int8_t *window) : h(taps, 0), samples(taps, 0)
 {
     this->idx = 0;
     this->taps = taps;
@@ -20,7 +20,6 @@ FIR_filter::FIR_filter(int taps, double f1, double f2, const char *type,
 
     // Calculate the coefficient corresponding to the filter type
     h = lowPass_coefficient(taps, f1);
-    printf("lp\n");
     // if (!strcmp(type, "lp"))
     // {
 
@@ -40,7 +39,6 @@ FIR_filter::FIR_filter(int taps, double f1, double f2, const char *type,
     // }
   //  w = window_hammig(taps);
     w = window_blackman(taps);
-    printf("hamming\n");
     // Calculate the window to improve the FIR filter
     // if (!strcmp(window, "hamming"))
     // {
@@ -59,7 +57,7 @@ FIR_filter::FIR_filter(int taps, double f1, double f2, const char *type,
     //     w = window_blackman(taps);
     // }
 
-    for (int n = 0; n < taps; n++)
+    for (int16_t n = 0; n < taps; n++)
     {
         this->h[n] = h[n] * w[n];
     }
@@ -70,33 +68,31 @@ FIR_filter::FIR_filter(int taps, double f1, double f2, const char *type,
     // }
     // else
     // {
-    //     for (int n = 0; n < taps; n++)
+    //     for (int16_t n = 0; n < taps; n++)
     //     {
     //         this->h[n] = h[n] * w[n];
     //     }
     // }
 }
 
-FIR_filter::~FIR_filter()
-{
-}
+
 
 std::vector<double> FIR_filter::getCoefficients()
 {
     return this->h;
 }
 
-std::vector<double> FIR_filter::lowPass_coefficient(int taps, double f)
+std::vector<double> FIR_filter::lowPass_coefficient(int16_t taps, double f)
 {
     std::vector<int> n(taps, 0);
     std::vector<double> h(taps, 0);
 
-    for (int i = 0; i < taps; i++)
+    for (int16_t i = 0; i < taps; i++)
     {
         n[i] = i - int(taps / 2);
     }
 
-    for (int i = 0; i < taps; i++)
+    for (int16_t i = 0; i < taps; i++)
     {
         h[i] = 2.0 * f * sinc(2.0 * f * n[i]);
     }
@@ -104,17 +100,17 @@ std::vector<double> FIR_filter::lowPass_coefficient(int taps, double f)
     return h;
 }
 
-std::vector<double> FIR_filter::highPass_coefficient(int taps, double f)
+std::vector<double> FIR_filter::highPass_coefficient(int16_t taps, double f)
 {
     std::vector<int> n(taps, 0);
     std::vector<double> h(taps, 0);
 
-    for (int i = 0; i < taps; i++)
+    for (int16_t i = 0; i < taps; i++)
     {
         n[i] = i - int(taps / 2);
     }
 
-    for (int i = 0; i < taps; i++)
+    for (int16_t i = 0; i < taps; i++)
     {
         h[i] = sinc(n[i]) - 2.0 * f * sinc(2.0 * f * n[i]);
     }
@@ -122,17 +118,17 @@ std::vector<double> FIR_filter::highPass_coefficient(int taps, double f)
     return h;
 }
 
-std::vector<double> FIR_filter::bandPass_coefficient(int taps, double f1, double f2)
+std::vector<double> FIR_filter::bandPass_coefficient(int16_t taps, double f1, double f2)
 {
     std::vector<int> n(taps, 0);
     std::vector<double> h(taps, 0);
 
-    for (int i = 0; i < taps; i++)
+    for (int16_t i = 0; i < taps; i++)
     {
         n[i] = i - int(taps / 2);
     }
 
-    for (int i = 0; i < taps; i++)
+    for (int16_t i = 0; i < taps; i++)
     {
         h[i] = 2.0 * f1 * sinc(2.0 * f1 * n[i]) - 2.0 * f2 * sinc(2.0 * f2 * n[i]);
     }
@@ -140,17 +136,17 @@ std::vector<double> FIR_filter::bandPass_coefficient(int taps, double f1, double
     return h;
 }
 
-std::vector<double> FIR_filter::bandStop_coefficient(int taps, double f1, double f2)
+std::vector<double> FIR_filter::bandStop_coefficient(int16_t taps, double f1, double f2)
 {
     std::vector<int> n(taps, 0);
     std::vector<double> h(taps, 0);
 
-    for (int i = 0; i < taps; i++)
+    for (int16_t i = 0; i < taps; i++)
     {
         n[i] = i - int(taps / 2);
     }
 
-    for (int i = 0; i < taps; i++)
+    for (int16_t i = 0; i < taps; i++)
     {
         h[i] = 2.0 * f1 * sinc(2.0 * f1 * n[i]) - 2.0 * f2 * sinc(2.0 * f2 * n[i]) + sinc(n[i]);
     }
@@ -158,7 +154,7 @@ std::vector<double> FIR_filter::bandStop_coefficient(int taps, double f1, double
     return h;
 }
 
-std::vector<double> FIR_filter::window_hammig(int taps)
+std::vector<double> FIR_filter::window_hammig(int16_t taps)
 {
     std::vector<int> n(taps, 0);
     std::vector<double> w(taps, 0);
@@ -166,7 +162,7 @@ std::vector<double> FIR_filter::window_hammig(int taps)
     double alpha = 0.54;
     double beta = 0.46;
 
-    for (int i = 0; i < taps; i++)
+    for (int16_t i = 0; i < taps; i++)
     {
         w[i] = alpha - beta * cos(2.0 * M_PI * i / (taps - 1));
     }
@@ -174,11 +170,11 @@ std::vector<double> FIR_filter::window_hammig(int taps)
     return w;
 }
 
-std::vector<double> FIR_filter::window_hanning(int taps)
+std::vector<double> FIR_filter::window_hanning(int16_t taps)
 {
     std::vector<double> w(taps, 0);
 
-    for (int i = 0; i < taps; i++)
+    for (int16_t i = 0; i < taps; i++)
     {
         w[i] = sin(((double)M_PI * i) / (taps - 1)) *
                sin(((double)M_PI * i) / (taps - 1));
@@ -187,13 +183,13 @@ std::vector<double> FIR_filter::window_hanning(int taps)
     return w;
 }
 
-std::vector<double> FIR_filter::window_triangle(int taps)
+std::vector<double> FIR_filter::window_triangle(int16_t taps)
 {
     std::vector<double> w(taps, 0);
 
     double l = taps;
 
-    for (int i = 0; i < taps; i++)
+    for (int16_t i = 0; i < taps; i++)
     {
         w[i] = 1 - abs((i - (((double)(taps - 1)) / 2.0)) / (((double)l) / 2.0));
     }
@@ -201,7 +197,7 @@ std::vector<double> FIR_filter::window_triangle(int taps)
     return w;
 }
 
-std::vector<double> FIR_filter::window_blackman(int taps)
+std::vector<double> FIR_filter::window_blackman(int16_t taps)
 {
     std::vector<double> w(taps, 0);
 
@@ -209,7 +205,7 @@ std::vector<double> FIR_filter::window_blackman(int taps)
     double alpha1 = 0.5;
     double alpha2 = 0.08;
 
-    for (int i = 0; i < taps; i++)
+    for (int16_t i = 0; i < taps; i++)
     {
         w[i] = alpha0 - alpha1 * cos(2.0 * M_PI * i / (taps - 1)) - alpha2 * cos(4.0 * M_PI * i / (taps - 1));
     }
@@ -225,7 +221,7 @@ double FIR_filter::filter(double new_sample)
     this->samples[this->idx] = new_sample;
 
     // Calculate the output
-    for (int n = 0; n < this->taps; n++)
+    for (int16_t n = 0; n < this->taps; n++)
         result += this->samples[(this->idx + n) % this->taps] * this->h[n];
 
     // Increase the round robin index

@@ -21,10 +21,10 @@ using std::string;
 #define MINUS 0x40
 #define DISPOFF 0x00
 
-const unsigned char DisplayPos[4] = {WEIGHT_POSITION, TARE_POSITION, UNIT_PRICE_POSITION, TOTAL_PRICE_POSITION};
-const unsigned char DisplayMaxDigitNo[4] = {WEIGHT_DIGITS_NO, TARE_DIGITS_NO, UNIT_PRICE_DIGITS_NO, TOTAL_PRICE_DIGITS_NO};
+const uint8_t DisplayPos[4] = {WEIGHT_POSITION, TARE_POSITION, UNIT_PRICE_POSITION, TOTAL_PRICE_POSITION};
+const uint8_t DisplayMaxDigitNo[4] = {WEIGHT_DIGITS_NO, TARE_DIGITS_NO, UNIT_PRICE_DIGITS_NO, TOTAL_PRICE_DIGITS_NO};
 
-const unsigned char Text_Convertion_Table[128] = {
+const uint8_t Text_Convertion_Table[128] = {
 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -40,29 +40,31 @@ namespace SSEG_DEVICE_DRIVER
 
     class Sseg
     {
-        static inline unsigned char displayBuffer[MAX_DISPLAY_DIGITS];
-        static inline unsigned char sevenSegmentStateMachine, currentChipNumber;
+        static inline uint8_t displayBuffer[MAX_DISPLAY_DIGITS];
+        static inline uint8_t sevenSegmentStateMachine, currentChipNumber;
         static inline bool enableRefresh, isPriceComputing;
 
     public:
-        static void InitDisplay(unsigned char intensity);
-        static void SetDispBuffer(unsigned char index,unsigned char data);
-        static unsigned char ReadDisplayBuffer(unsigned char index);
+        static void InitDisplay(uint8_t intensity);
+        static void SetDispBuffer(uint8_t index, uint8_t data);
+        static uint8_t ReadDisplayBuffer(uint8_t index);
         static void RefreshDisplay(void);
         static void DialpayStart(void);
         static void DialpayStop(void);
         static void BlankDisplay(void);
-        static void Write_Message_To_Display(string Message, unsigned char displayPart, unsigned char posintion, bool cleanFirst);
-        static void BlankDisplayPart(unsigned char displayPart);
-        static void Write_Number_To_Display(long long input, unsigned char displayPart, bool showDecimalPoint, unsigned char decimapPointPosition, bool Show_BackZero, bool Show_Front_Zero, unsigned char digitDisplayNumbers, bool alignCenter, bool cleanFirst);
-        static void Scroll_Message(const char *Message, unsigned char displayPart, unsigned char startPos, int delayMS, int returnKeyCode, bool retunKeyState, bool exitIfCompleted);
-        static void viewScrollMessage(string &Message, unsigned char displayPart, int delayMS);
-        static void getNumber(string& digitsBuffer, unsigned char &keyCode, unsigned char &digitIndex, unsigned long Max);
-
+        static void Write_Message_To_Display(string Message, uint8_t displayPart, uint8_t posintion, bool cleanFirst);
+        static void BlankDisplayPart(uint8_t displayPart);
+        static void Write_Number_To_Display(int32_t input, uint8_t displayPart, bool showDecimalPoint, uint8_t decimapPointPosition, bool Show_BackZero, bool Show_Front_Zero, uint8_t digitDisplayNumbers, bool alignCenter, bool cleanFirst);
+        static void Scroll_Message(string Message, uint8_t displayPart, uint8_t startPos, int16_t delayMS, int16_t returnKeyCode, bool retunKeyState, bool exitIfCompleted);
+        static void viewScrollMessage(string &Message, uint8_t displayPart, int16_t delayMS);
+        static void getNumber(string &digitsBuffer, uint8_t &keyCode, uint8_t &digitIndex, uint32_t Max);
+        static void BlinkDigit(uint8_t &digitIndex, uint8_t displayPart, uint8_t blinkDigit, uint16_t delayMS);
+        static void ResetBlinkTimer(uint16_t delayMS);
+       
     private:
-        static void StartBus(unsigned char chipNumber);
-        static void StopBus(unsigned char chipNumber);
-        static void WriteToTM1640(unsigned int Data, unsigned char chipNumber);
-        static void ClearTM1640(unsigned char chipNumber);
+        static void StartBus(uint8_t chipNumber);
+        static void StopBus(uint8_t chipNumber);
+        static void WriteToTM1640(uint16_t Data, uint8_t chipNumber);
+        static void ClearTM1640(uint8_t chipNumber);
     };
 }

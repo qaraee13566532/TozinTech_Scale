@@ -44,4 +44,5 @@ core/device_driver/commiunication_uart
 core/device_driver/matrix_keyboard  
 features/calibration/usecase
 features/calibration/ui
+
 core/device_driver/seven_segment_display)

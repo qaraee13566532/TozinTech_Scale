@@ -1,8 +1,11 @@
 #include <iostream>
+#include <map>
 
 using std::cout;
 using std::endl;
+using std::map;
 using std::runtime_error;
+using std::string;
 
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
@@ -22,10 +25,10 @@ using std::runtime_error;
 #include "core/device_driver/adc_ads1232/adc.h"
 #include "features/calibration/usecase/calibration.h"
 #include "features/calibration/ui/calibration_page.h"
-
-// #include "cJSON.h"
-// #include "esp_log.h"
-// #include "esp_chip_info.h"
+#include "definations.h"
+#include "cJSON.h"
+#include "esp_log.h"
+#include "esp_chip_info.h"
 
 extern void initialize(void);
 
@@ -48,13 +51,14 @@ using namespace CALIBRATION;
 void app_main(void)
 {
 
-  // unsigned char keydata = 0, keyState = 0;
+  // uint8_t keydata = 0, keyState = 0;
   // bool keytype = false;
-  // int cmc = 0;
+  // int16_t cmc = 0;
 
   initialize();
 
   // cJSON *root;
+  // string TAG;
   // root = cJSON_CreateObject();
   // esp_chip_info_t chip_info;
   // esp_chip_info(&chip_info);
@@ -62,32 +66,22 @@ void app_main(void)
   // cJSON_AddNumberToObject(root, "cores", chip_info.cores);
   // cJSON_AddTrueToObject(root, "flag_true");
   // cJSON_AddFalseToObject(root, "flag_false");
-  // char *my_json_string = cJSON_Print(root);
-  // ESP_LOGI(TAG, "my_json_string\n%s", my_json_string);
+  // string my_json_string = cJSON_Print(root);
+  // ESP_LOGI(TAG.c_str(), "my_json_string\n%s", my_json_string.c_str());
   // cJSON_Delete(root);
-  // ESP_LOGI(TAG, "Deserialize.....");
-  // cJSON *root2 = cJSON_Parse(my_json_string);
-  // if (cJSON_GetObjectItem(root2, "version")) {
-  // 	char *version = cJSON_GetObjectItem(root2,"version")->valuestring;
-  // 	ESP_LOGI(TAG, "version=%s",version);
-  // }
-  // if (cJSON_GetObjectItem(root2, "cores")) {
-  // 	int cores = cJSON_GetObjectItem(root2,"cores")->valueint;
-  // 	ESP_LOGI(TAG, "cores=%d",cores);
-  // }
-  // if (cJSON_GetObjectItem(root2, "flag_true")) {
-  // 	bool flag_true = cJSON_GetObjectItem(root2,"flag_true")->valueint;
-  // 	ESP_LOGI(TAG, "flag_true=%d",flag_true);
-  // }
-  // if (cJSON_GetObjectItem(root2, "flag_false")) {
-  // 	bool flag_false = cJSON_GetObjectItem(root2,"flag_false")->valueint;
-  // 	ESP_LOGI(TAG, "flag_false=%d",flag_false);
+  // ESP_LOGI(TAG.c_str(), "Deserialize.....");
+  // cJSON *root2 = cJSON_Parse(my_json_string.c_str());
+  // if (cJSON_GetObjectItem(root2, "flag_false"))
+  // {
+  //   bool flag_false = cJSON_GetObjectItem(root2, "flag_false")->valueint;
+  //   ESP_LOGI(TAG.c_str(), "flag_false=%d", flag_false);
   // }
   // cJSON_Delete(root2);
-  // cJSON_free(my_json_string);
 
-  // int cc = 0;
-  // char *buf = (char *)malloc(100);
+  CalibrationPage::RunTasks();
+
+  // int16_t cc = 0;
+  // int8_t *buf = (int8_t *)malloc(100);
 
   // https://github.com/espressif/esp-idf/tree/master/components/json
 
@@ -148,5 +142,4 @@ void app_main(void)
   //   //   printf("data = %d-%d-%d , %ld \n", Rtc::Year, Rtc::Month, Rtc::Day,Rtc::Current_Date);
   // }
   // }
-  CalibrationPage::RunTasks();
 }

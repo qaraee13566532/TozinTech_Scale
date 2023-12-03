@@ -19,22 +19,22 @@ namespace PLU
         }
 
     public:
-        unsigned long sellPrice;
-        unsigned long buyPrice;
-        unsigned long pluNumber;
-        unsigned int pluName[MAX_PLU_NAME_LENGHT];
-        unsigned char barcodeID;
-        unsigned char pluType;
-        unsigned char pluUnit;
-        unsigned char discountID;
-        unsigned char taxID;
+        uint32_t sellPrice;
+        uint32_t buyPrice;
+        uint32_t pluNumber;
+        uint16_t pluName[MAX_PLU_NAME_LENGHT];
+        uint8_t barcodeID;
+        uint8_t pluType;
+        uint8_t pluUnit;
+        uint8_t discountID;
+        uint8_t taxID;
         bool isDeleted;
         bool isActived;
-        unsigned char groupID;
-        unsigned char department;
-        unsigned int expireDate;
-        unsigned int expireTime;
-        unsigned char barcode[MAX_BARCODE_LENGHT];
+        uint8_t groupID;
+        uint8_t department;
+        uint16_t expireDate;
+        uint16_t expireTime;
+        uint8_t barcode[MAX_BARCODE_LENGHT];
 
     public:
         void setData(void)
@@ -43,7 +43,7 @@ namespace PLU
         }
 
     public:
-        unsigned char getData(void)
+        uint8_t getData(void)
         {
             return barcodeID;
         }

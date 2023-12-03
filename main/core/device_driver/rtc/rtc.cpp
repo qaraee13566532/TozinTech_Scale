@@ -1,6 +1,7 @@
 #include "core\device_driver\rtc\rtc.h"
 #include <time.h>
 #include <sys/time.h>
+#include <iostream>
 
 namespace REALTIME_CLOCK
 {
@@ -17,12 +18,12 @@ namespace REALTIME_CLOCK
         Second = Current_Time % 100;
     }
 
-    unsigned char Rtc::DateConvert(unsigned char datemode)
+    uint8_t Rtc::DateConvert(uint8_t datemode)
     // datemode: 1 s->m  , 0 m -> s
     {
-        long datetemp2, datetemp1, datetemp3;
-        int ytemp;
-        unsigned char datei;
+        int32_t datetemp2, datetemp1, datetemp3;
+        int16_t ytemp;
+        uint8_t datei;
         if (datemode)
         {
             ytemp = datesyear;
@@ -163,20 +164,20 @@ namespace REALTIME_CLOCK
         datemmon = Month;
         datemday = Day;
         DateConvert(0);
-        Current_Time = (unsigned long)Hour * 10000;
-        Current_Time += (unsigned long)Min * 100;
-        Current_Time += (unsigned long)Second;
+        Current_Time = (uint32_t)Hour * 10000;
+        Current_Time += (uint32_t)Min * 100;
+        Current_Time += (uint32_t)Second;
         if (dateType == 0)
         {
-            Current_Date = (unsigned long)datesyear * 10000;
-            Current_Date += (unsigned long)datesmon * 100;
-            Current_Date += (unsigned long)datesday;
+            Current_Date = (uint32_t)datesyear * 10000;
+            Current_Date += (uint32_t)datesmon * 100;
+            Current_Date += (uint32_t)datesday;
         }
         else
         {
-            Current_Date = (unsigned long)datemyear * 10000;
-            Current_Date += (unsigned long)datemmon * 100;
-            Current_Date += (unsigned long)datemday;
+            Current_Date = (uint32_t)datemyear * 10000;
+            Current_Date += (uint32_t)datemmon * 100;
+            Current_Date += (uint32_t)datemday;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace SNTP
 {
     void Sntp::time_sync_notification_cb(struct timeval *tv)
     {
-        ESP_LOGI(TAG, "Notification of a time synchronization event");
+        ESP_LOGI(TAG.c_str(), "Notification of a time synchronization event");
         isDateTimeReceived = true;
         
     }
@@ -29,7 +29,7 @@ namespace SNTP
         autoAdjustDateTime = true;
         isRequestedForDateTime = false;
         isDateTimeReceived = false;
-        ESP_LOGI(TAG, "Initializing SNTP");
+        ESP_LOGI(TAG.c_str(), "Initializing SNTP");
         sntp_setoperatingmode(SNTP_OPMODE_POLL);
 
 #if LWIP_DHCP_GET_NTP_SRV && SNTP_MAX_SERVERS > 1
@@ -56,13 +56,13 @@ namespace SNTP
 #endif
         sntp_init();
 
-        ESP_LOGI(TAG, "List of configured NTP servers:");
+        ESP_LOGI(TAG.c_str(), "List of configured NTP servers:");
 
         for (uint8_t i = 0; i < SNTP_MAX_SERVERS; ++i)
         {
             if (sntp_getservername(i))
             {
-                ESP_LOGI(TAG, "server %d: %s", i, sntp_getservername(i));
+                ESP_LOGI(TAG.c_str(), "server %d: %s", i, sntp_getservername(i));
             }
             else
             {
@@ -70,7 +70,7 @@ namespace SNTP
                 char buff[INET6_ADDRSTRLEN];
                 ip_addr_t const *ip = sntp_getserver(i);
                 if (ipaddr_ntoa_r(ip, buff, INET6_ADDRSTRLEN) != NULL)
-                    ESP_LOGI(TAG, "server %d: %s", i, buff);
+                    ESP_LOGI(TAG.c_str(), "server %d: %s", i, buff);
             }
         }
     }

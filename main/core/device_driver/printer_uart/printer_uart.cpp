@@ -3,6 +3,8 @@
 #include "driver/uart.h"
 #include "core/device_driver/gpio/gpio.h"
 #include "string.h"
+#include <iostream>
+using std::string;
 
 namespace PRINTER_UART
 {
@@ -17,12 +19,12 @@ namespace PRINTER_UART
         uart_driver_install(UART_NUM_1, 2048, 2048, 0, NULL, 0);
         uart_param_config(UART_NUM_1, &uart_config);
         uart_set_pin(UART_NUM_1, GPIO_NUM_17, GPIO_NUM_16, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
-        received_buffer = (unsigned char *)malloc(1024 + 1);
+        received_buffer = (uint8_t *)malloc(1024 + 1);
     }
 
-    void PrinterUart::PrinterTransmitData(char *data)
+    void PrinterUart::PrinterTransmitData(string data)
     {
-        uart_write_bytes(UART_NUM_1, data, strlen(data));
+        uart_write_bytes(UART_NUM_1, &data, data.length());
     }
 
     void PrinterUart::PrinterReceiveData(void)

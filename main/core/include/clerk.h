@@ -18,10 +18,10 @@ namespace CLERK
         }
 
     public:
-        unsigned int code;
-        char *clerkID;
-        int *nickName;
-        char *password;
-        unsigned int level;
+        uint16_t code;
+        int8_t *clerkID;
+        int16_t *nickName;
+        int8_t *password;
+        uint16_t level;
     };
 }

@@ -16,12 +16,12 @@ namespace CUSTOMER
         }
 
     public:
-        int code;
-        int *name;
-        char *phone;
-        int creditLimitAccount;
-        int *address1;
-        int *address2;
-        int *address3;
+        int16_t code;
+        int16_t *name;
+        int8_t *phone;
+        int16_t creditLimitAccount;
+        int16_t *address1;
+        int16_t *address2;
+        int16_t *address3;
     };
 }

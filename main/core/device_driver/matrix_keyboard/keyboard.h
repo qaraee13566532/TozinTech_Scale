@@ -20,11 +20,12 @@
 #define KEY_NUMBER_8 80
 #define KEY_NUMBER_9 88
 
-#define KEY_ZERO 112
-#define KEY_TARE 108
-#define KEY_CLEAR 81
+#define KEY_ZERO    112
+#define KEY_TARE    108
+#define KEY_CLEAR    81
+#define KEY_RESAULT 105
 
-const unsigned char englishKeyMap[112] = {
+const uint8_t englishKeyMap[112] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -38,7 +39,7 @@ const unsigned char englishKeyMap[112] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0};
 
-const unsigned char persianKeyMap[112] = {
+const uint8_t persianKeyMap[112] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -59,27 +60,27 @@ namespace MATRIX_KEYBOARD
     class Keyboard
     {
     public:
-        static inline unsigned char pressedKeysRowBuffer[MAX_PRESSED_KEY_BUFFER_SIZE];
-        static inline unsigned char pressedKeysColoumnBuffer[MAX_PRESSED_KEY_BUFFER_SIZE];
-        static inline unsigned int pressedKeysBounceCounter[MAX_PRESSED_KEY_BUFFER_SIZE];
+        static inline uint8_t pressedKeysRowBuffer[MAX_PRESSED_KEY_BUFFER_SIZE];
+        static inline uint8_t pressedKeysColoumnBuffer[MAX_PRESSED_KEY_BUFFER_SIZE];
+        static inline uint16_t pressedKeysBounceCounter[MAX_PRESSED_KEY_BUFFER_SIZE];
         static inline bool longPressedKeysflag[MAX_PRESSED_KEY_BUFFER_SIZE];
         static inline bool shortPressedKeysflag[MAX_PRESSED_KEY_BUFFER_SIZE];
         static inline bool releasedKeysflag[MAX_PRESSED_KEY_BUFFER_SIZE];
-        static inline unsigned char releasedKeysCounter[MAX_PRESSED_KEY_BUFFER_SIZE];
+        static inline uint8_t releasedKeysCounter[MAX_PRESSED_KEY_BUFFER_SIZE];
         static inline bool keyPressedType[MAX_KEYBOARD_BUFFER_SIZE];
-        static inline unsigned char KeyCodeBuffer[MAX_KEYBOARD_BUFFER_SIZE];
+        static inline uint8_t KeyCodeBuffer[MAX_KEYBOARD_BUFFER_SIZE];
 
-        static inline unsigned char pressedKeysNumber, keyRows, keyColumnCounter, loopCounter, keyHead, keyTail;
+        static inline uint8_t pressedKeysNumber, keyRows, keyColumnCounter, loopCounter, keyHead, keyTail;
 
     public:
-        static bool IfKeyNotExistInBuffer(unsigned char rowId, unsigned char colId);
+        static bool IfKeyNotExistInBuffer(uint8_t rowId, uint8_t colId);
         static void InitKeyboard(void);
-        static unsigned char ReturnFreeLocation(void);
+        static uint8_t ReturnFreeLocation(void);
         static void Readkeyboard(void);
         static void GetKeys(void);
         static void KeyIOSetReset(gpio_num_t Port_Bits, bool SetReset);
-        static void SavePressedKeysToBuffer(gpio_num_t keyRow, unsigned char rowId);
-        static gpio_num_t GetRowGpio(unsigned char rowId);
-        static void readKeyBuffer(unsigned char &data, bool &typ);
+        static void SavePressedKeysToBuffer(gpio_num_t keyRow, uint8_t rowId);
+        static gpio_num_t GetRowGpio(uint8_t rowId);
+        static void readKeyBuffer(uint8_t &data, bool &typ);
     };
 }

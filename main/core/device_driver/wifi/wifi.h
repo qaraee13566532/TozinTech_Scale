@@ -6,6 +6,8 @@
 #include "freertos/event_groups.h"
 #include "esp_event.h"
 #include "esp_wifi.h"
+#include <iostream>
+using std::string;
 
 #define WIFI_CONNECTED_BIT BIT0
 #define WIFI_FAIL_BIT BIT1
@@ -40,8 +42,8 @@ namespace WIFI
     class Wifi
     {
     public:
-        static inline const char *TAG;
-        static inline int s_retry_num = 0;
+        static inline string TAG;
+        static inline int16_t s_retry_num = 0;
         static inline EventGroupHandle_t s_wifi_event_group;
         static inline wifi_config_t wifi_config;
 

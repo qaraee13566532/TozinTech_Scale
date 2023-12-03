@@ -8,6 +8,8 @@
 #include "lwip/sys.h"
 #include "string.h"
 #include "esp_mac.h"
+#include <iostream>
+using std::string;
 
 namespace WIFI
 {
@@ -32,13 +34,13 @@ namespace WIFI
         if (event_id == WIFI_EVENT_AP_STACONNECTED)
         {
             wifi_event_ap_staconnected_t *event = (wifi_event_ap_staconnected_t *)event_data;
-            ESP_LOGI(TAG, "station " MACSTR " join, AID=%d",
+            ESP_LOGI(TAG.c_str(), "station " MACSTR " join, AID=%d",
                      MAC2STR(event->mac), event->aid);
         }
         else if (event_id == WIFI_EVENT_AP_STADISCONNECTED)
         {
             wifi_event_ap_stadisconnected_t *event = (wifi_event_ap_stadisconnected_t *)event_data;
-            ESP_LOGI(TAG, "station " MACSTR " leave, AID=%d",
+            ESP_LOGI(TAG.c_str(), "station " MACSTR " leave, AID=%d",
                      MAC2STR(event->mac), event->aid);
         }
     }
@@ -58,13 +60,13 @@ namespace WIFI
                                                             NULL,
                                                             NULL));
 
-        strcpy((char *)&wifi_config.ap.ssid[0], (char *)&EXAMPLE_ESP_WIFI_SSID[0]);
+        strcpy((char *)wifi_config.ap.ssid, EXAMPLE_ESP_WIFI_SSID);
         wifi_config.ap.ssid_len = strlen(EXAMPLE_ESP_WIFI_SSID);
         wifi_config.ap.channel = EXAMPLE_ESP_WIFI_CHANNEL;
         wifi_config.ap.max_connection = EXAMPLE_MAX_STA_CONN;
         wifi_config.ap.authmode = WIFI_AUTH_WPA_WPA2_PSK;
         wifi_config.ap.pmf_cfg.required = false;
-        strcpy((char *)&wifi_config.sta.password[0], (char *)&EXAMPLE_ESP_WIFI_PASS[0]);
+        strcpy((char *)wifi_config.sta.password, EXAMPLE_ESP_WIFI_PASS);
 
         if (strlen(EXAMPLE_ESP_WIFI_PASS) == 0)
         {
@@ -75,7 +77,7 @@ namespace WIFI
         ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP, &wifi_config));
         ESP_ERROR_CHECK(esp_wifi_start());
 
-        ESP_LOGI(TAG, "wifi_init_softap finished. SSID:%s password:%s channel:%d",
+        ESP_LOGI(TAG.c_str(), "wifi_init_softap finished. SSID:%s password:%s channel:%d",
                  EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS, EXAMPLE_ESP_WIFI_CHANNEL);
     }
 
@@ -92,18 +94,18 @@ namespace WIFI
             {
                 esp_wifi_connect();
                 s_retry_num++;
-                ESP_LOGI(TAG, "retry to connect to the AP");
+                ESP_LOGI(TAG.c_str(), "retry to connect to the AP");
             }
             else
             {
                 xEventGroupSetBits(s_wifi_event_group, WIFI_FAIL_BIT);
             }
-            ESP_LOGI(TAG, "connect to the AP fail");
+            ESP_LOGI(TAG.c_str(), "connect to the AP fail");
         }
         else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
         {
             ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
-            ESP_LOGI(TAG, "got ip:" IPSTR, IP2STR(&event->ip_info.ip));
+            ESP_LOGI(TAG.c_str(), "got ip:" IPSTR, IP2STR(&event->ip_info.ip));
             s_retry_num = 0;
             xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
         }
@@ -132,8 +134,8 @@ namespace WIFI
                                                             &sta_wifi_event_handler,
                                                             NULL,
                                                             &instance_got_ip));
-        strcpy((char *)&wifi_config.sta.ssid[0], (char *)&EXAMPLE_ESP_WIFI_SSID[0]);
-        strcpy((char *)&wifi_config.sta.password[0], (char *)&EXAMPLE_ESP_WIFI_PASS[0]);
+        strcpy((char *)wifi_config.sta.ssid, EXAMPLE_ESP_WIFI_SSID);
+        strcpy((char *)wifi_config.sta.password,EXAMPLE_ESP_WIFI_PASS);
         wifi_config.sta.threshold.authmode = ESP_WIFI_SCAN_AUTH_MODE_THRESHOLD;
         wifi_config.sta.sae_pwe_h2e = WPA3_SAE_PWE_BOTH;
 
@@ -141,7 +143,7 @@ namespace WIFI
         ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
         ESP_ERROR_CHECK(esp_wifi_start());
 
-        ESP_LOGI(TAG, "wifi_init_sta finished.");
+        ESP_LOGI(TAG.c_str(), "wifi_init_sta finished.");
 
         /* Waiting until either the connection is established (WIFI_CONNECTED_BIT) or connection failed for the maximum
          * number of re-tries (WIFI_FAIL_BIT). The bits are set by event_handler() (see above) */
@@ -155,17 +157,17 @@ namespace WIFI
          * happened. */
         if (bits & WIFI_CONNECTED_BIT)
         {
-            ESP_LOGI(TAG, "connected to ap SSID:%s password:%s",
+            ESP_LOGI(TAG.c_str(), "connected to ap SSID:%s password:%s",
                      EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
         }
         else if (bits & WIFI_FAIL_BIT)
         {
-            ESP_LOGI(TAG, "Failed to connect to SSID:%s, password:%s",
+            ESP_LOGI(TAG.c_str(), "Failed to connect to SSID:%s, password:%s",
                      EXAMPLE_ESP_WIFI_SSID, EXAMPLE_ESP_WIFI_PASS);
         }
         else
         {
-            ESP_LOGE(TAG, "UNEXPECTED EVENT");
+            ESP_LOGE(TAG.c_str(), "UNEXPECTED EVENT");
         }
     }
 }

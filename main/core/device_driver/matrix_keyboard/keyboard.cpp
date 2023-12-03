@@ -28,7 +28,7 @@ namespace MATRIX_KEYBOARD
         SetReset ? gpio_set_direction(Port_Bits, GPIO_MODE_OUTPUT) : gpio_set_direction(Port_Bits, GPIO_MODE_INPUT);
         SetReset ? gpio_set_level(Port_Bits, 1) : gpio_set_level(Port_Bits, 0);
     }
-    bool Keyboard::IfKeyNotExistInBuffer(unsigned char rowId, unsigned char colId)
+    bool Keyboard::IfKeyNotExistInBuffer(uint8_t rowId, uint8_t colId)
     {
         for (loopCounter = 0; loopCounter < MAX_PRESSED_KEY_BUFFER_SIZE; loopCounter++)
         {
@@ -38,7 +38,7 @@ namespace MATRIX_KEYBOARD
         return true;
     }
 
-    unsigned char Keyboard::ReturnFreeLocation(void)
+    uint8_t Keyboard::ReturnFreeLocation(void)
     {
         for (loopCounter = 0; loopCounter < MAX_PRESSED_KEY_BUFFER_SIZE; loopCounter++)
         {
@@ -48,9 +48,9 @@ namespace MATRIX_KEYBOARD
         return loopCounter;
     }
 
-    void Keyboard::SavePressedKeysToBuffer(gpio_num_t keyRow, unsigned char rowId)
+    void Keyboard::SavePressedKeysToBuffer(gpio_num_t keyRow, uint8_t rowId)
     {
-        unsigned char freeBufferLocation;
+        uint8_t freeBufferLocation;
         freeBufferLocation = ReturnFreeLocation();
         if (pressedKeysNumber < MAX_PRESSED_KEY_BUFFER_SIZE)
         {
@@ -72,7 +72,7 @@ namespace MATRIX_KEYBOARD
             }
         }
     }
-    gpio_num_t Keyboard::GetRowGpio(unsigned char rowId)
+    gpio_num_t Keyboard::GetRowGpio(uint8_t rowId)
     {
         gpio_num_t gpio = Key_Row1;
 
@@ -188,7 +188,7 @@ namespace MATRIX_KEYBOARD
             keyColumnCounter = 0;
         KeyIOSetReset(Scan_Port_Address[keyColumnCounter], 1);
     }
-    void Keyboard::readKeyBuffer(unsigned char  &data, bool  &type)
+    void Keyboard::readKeyBuffer(uint8_t  &data, bool  &type)
     {
         if (keyHead != keyTail)
         {
