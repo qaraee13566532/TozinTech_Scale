@@ -35,6 +35,8 @@ namespace CALIBRATION
         const map<uint8_t, string> calibrationUnitMap{{0, "gram"}, {1, "kilogram"}, {2, "ton"}, {3, "pound"}, {4, "ounce"}};
         const map<uint8_t, string> decimalPoint{{0, "----"}, {1, "0.0"}, {2, "0.00"}, {3, "0.000"}};
         const map<uint8_t, string> calibrationTypeMap{{0, "multi range"}, {1, "multi interval"}};
+        const map<uint8_t, int> accuracyMap{{0, 1}, {1, 2}, {1, 5}, {1, 10}, {1, 20}, {1, 50}};
+
         string serializedData;
         uint8_t platformId;
         uint32_t firstIntervalMax;

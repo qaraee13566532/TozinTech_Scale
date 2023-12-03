@@ -2,7 +2,11 @@
 
 #include <math.h>
 #include <iostream>
+#include <map>
+
 using std::string;
+using std::map;
+
 
 #define WEIGHT_POSITION 0
 #define TARE_POSITION 7
@@ -60,6 +64,8 @@ namespace SSEG_DEVICE_DRIVER
         static void getNumber(string &digitsBuffer, uint8_t &keyCode, uint8_t &digitIndex, uint32_t Max);
         static void BlinkDigit(uint8_t &digitIndex, uint8_t displayPart, uint8_t blinkDigit, uint16_t delayMS);
         static void ResetBlinkTimer(uint16_t delayMS);
+        static void selectItem(const map<uint8_t, uint32_t> valueMap,const map<uint8_t, string> helperMap,uint8_t &keyCode, uint8_t displayPart, uint8_t maxDigits, uint32_t &selector,bool showHelper);
+        
        
     private:
         static void StartBus(uint8_t chipNumber);

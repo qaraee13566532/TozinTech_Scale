@@ -10,6 +10,9 @@
 #include <sstream>
 #include <string>
 #include "core/device_driver/timer/timer.h"
+#include <map>
+
+using std::map;
 
 using std::cout;
 using std::endl;
@@ -350,6 +353,27 @@ namespace SSEG_DEVICE_DRIVER
             for (messageCounter = 0; messageCounter < Len; messageCounter++)
                 Message[messageCounter] = Message[messageCounter + 1];
             Message[Len - 1] = swap;
+        }
+    }
+    void Sseg::selectItem(const map<uint8_t, uint32_t> valueMap, const map<uint8_t, string> helperMap, uint8_t &keyCode, uint8_t displayPart, uint8_t maxDigits, uint32_t &selector, bool showHelper)
+    {
+        switch (keyCode)
+        {
+        case KEY_ZERO:
+            selector++;
+            if (selector == valueMap.size())
+                selector = 0;
+            Write_Number_To_Display(valueMap.at(selector), displayPart, false, 0, false, false, maxDigits, false, false);
+            if (showHelper == true)
+                Write_Message_To_Display(helperMap.at(selector), UNIT_PRICE, 7, true);
+
+            break;
+        case KEY_CLEAR:
+            selector = 0;
+            Write_Number_To_Display(valueMap.at(selector), displayPart, false, 0, false, false, maxDigits, false, false);
+            if (showHelper == true)
+                Write_Message_To_Display(helperMap.at(selector), UNIT_PRICE, 7, true);
+            break;
         }
     }
     void Sseg::getNumber(string &digitsBuffer, uint8_t &keyCode, uint8_t &digitIndex, uint32_t Max)
