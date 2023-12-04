@@ -109,10 +109,10 @@ namespace CALIBRATION
 
     void Calibration::setZero(void)
     {
-        if (platformId == 0 || platformId > 2)
-            throw runtime_error("Exception in platform ID .");
-        if (Adc::isAdcNegative)
-            throw runtime_error("!Negative ADC number .");
+        // if (platformId == 0 || platformId > 2)
+        //     throw runtime_error("Exception in platform ID .");
+        // if (Adc::isAdcNegative)
+        //     throw runtime_error("!Negative ADC number .");
         calibrationAdcOffset = Adc::rawAdc[platformId];
     }
 }

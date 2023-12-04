@@ -52,13 +52,14 @@ namespace CALIBRATION
         CalibrationPage::helperMessage = helperMessage;
         digitsBuffer = std::to_string(Number);
         CalibrationPage::digitIndex = 0;
-        Sseg::Write_Number_To_Display(Number, CalibrationPage::currentLocation, false, 0, true, true, CalibrationPage::maxDigits, false, false);
-
+        Sseg::Write_Message_To_Display(nextPageTitle, CalibrationPage::currentLocation, 6, true);
+        enableToEntering = false;
+        //    Sseg::Write_Number_To_Display(Number, CalibrationPage::currentLocation, false, 0, true, true, CalibrationPage::maxDigits, false, false);
     }
 
     void CalibrationPage::RunTasks(void)
     {
-        maxDigits = 1;
+
         pageState = CalibrationInitialize;
         currentPlatform = 0;
         keyCode = 0;
@@ -69,21 +70,22 @@ namespace CALIBRATION
         keytype = false;
         unsigned char selector = 0;
         map<uint8_t, string> empty;
-        Sseg::BlankDisplay();
         Sseg::Scroll_Message("CALIbrAtion", WEIGHT, 6, ScrollMessageDelayMS, 1, false, true);
-        helperMessage = "PLAtForm Id .   ";
-        DELAY(500);
+                
         while (true)
         {
             switch (pageState)
             {
             case CalibrationInitialize:
+                maxDigits = 1;
+                Sseg::BlankDisplay();
+                helperMessage = "PLAtForm Id .   ";
                 currentLocation = WEIGHT;
                 Sseg::Write_Message_To_Display("PFM=", WEIGHT, 6, true);
                 Sseg::Write_Number_To_Display(Number, WEIGHT, false, 0, true, true, maxDigits, false, false);
                 blinkDigit = Sseg::ReadDisplayBuffer(DisplayPos[currentLocation] + digitIndex);
                 Sseg::Write_Number_To_Display(platformValueMap.at(selector), currentLocation, false, 0, false, false, maxDigits, false, false);
-
+                enableToEntering = false;
                 pageState = SelectPlatform;
                 break;
 
@@ -143,19 +145,34 @@ namespace CALIBRATION
                     keyCode = 0;
                 }
                 break;
+            case SaveZeroPoint:
+                Sseg::viewScrollMessage(helperMessage, TOTAL_PRICE, ScrollMessageDelayMS);
+                break;
+            case DoCalibration:
+                Sseg::viewScrollMessage(helperMessage, TOTAL_PRICE, ScrollMessageDelayMS);
+                break;
             case EnterCalibrationLoad:
             case EnterFirstMax:
             case EnterSecondMax:
-                Sseg::viewScrollMessage(helperMessage, TOTAL_PRICE, ScrollMessageDelayMS);
-                Sseg::getNumber(digitsBuffer, keyCode, digitIndex, pow(10, maxDigits));
-                if (keyCode)
+                if (keyCode == KEY_TARE && enableToEntering == false)
                 {
-                    istringstream(digitsBuffer) >> Number;
-                    Sseg::Write_Number_To_Display(Number, WEIGHT, false, 0, true, true, maxDigits, false, false);
+                    enableToEntering = true;
                     keyCode = 0;
-                    blinkDigit = Sseg::ReadDisplayBuffer(DisplayPos[currentLocation] + digitIndex);
+                    Sseg::Write_Number_To_Display(Number, WEIGHT, false, 0, true, true, maxDigits, false, false);
                 }
-                Sseg::BlinkDigit(digitIndex, currentLocation, blinkDigit, blinkDelay);
+                Sseg::viewScrollMessage(helperMessage, TOTAL_PRICE, ScrollMessageDelayMS);
+                if (enableToEntering == true)
+                {
+                    Sseg::getNumber(digitsBuffer, keyCode, digitIndex, pow(10, maxDigits));
+                    if (keyCode)
+                    {
+                        istringstream(digitsBuffer) >> Number;
+                        Sseg::Write_Number_To_Display(Number, WEIGHT, false, 0, true, true, maxDigits, false, false);
+                        keyCode = 0;
+                        blinkDigit = Sseg::ReadDisplayBuffer(DisplayPos[currentLocation] + digitIndex);
+                    }
+                    Sseg::BlinkDigit(digitIndex, currentLocation, blinkDigit, blinkDelay);
+                }
 
                 break;
             default:
@@ -203,26 +220,36 @@ namespace CALIBRATION
                     break;
                 case SelectDecimalPointPosition:
                     weightPlatforms[currentPlatform].decimalPointPosition = Number;
-                    generalTaks(EnterCalibrationLoad, 6, WEIGHT, "CALIbrAtion LoAd .  ", "CAL-Lod", 0);
+                    generalTaks(EnterCalibrationLoad, 6, WEIGHT, "CALIbrAtion LoAd .  ", "AdLoAd", 0);
                     break;
                 case EnterCalibrationLoad:
                     weightPlatforms[currentPlatform].calibrationLoad = Number;
-                    generalTaks(EnterFirstMax, 6, WEIGHT, "FIrSt mAX .  ", " mAX-1 ", 0);
+                    generalTaks(EnterFirstMax, 6, WEIGHT, "FIrSt mAX .  ", "Full-1", 0);
                     break;
                 case EnterFirstMax:
                     weightPlatforms[currentPlatform].decimalPointPosition = Number;
-                    generalTaks(EnterSecondMax, 6, WEIGHT, "SECOnd mAH .  ", " mAX-2 ", 0);
+                    generalTaks(EnterSecondMax, 6, WEIGHT, "SECOnd mAX .  ", "Full-2", 0);
                     break;
                 case EnterSecondMax:
                     weightPlatforms[currentPlatform].decimalPointPosition = Number;
-                    generalTaks(EnterSecondMax, 6, WEIGHT, "CALIbrAtion LoAd .  ", "", 0);
+                    generalTaks(SaveZeroPoint, 6, WEIGHT, "SEt ZEro .  ", "noLoAd", 0);
+                    break;
+                case SaveZeroPoint:
+                    weightPlatforms[currentPlatform].setZero();
+                    generalTaks(DoCalibration, 6, WEIGHT, "CALIbrAtion .   ", "-VAIt-", 0);
+                    break;
+                case DoCalibration:
+                    pageState = CalibrationInitialize;
                     break;
                 }
                 break;
             case KEY_TARE:
-                digitIndex++;
-                if (digitIndex == maxDigits)
-                    digitIndex = 0;
+                if (enableToEntering == true)
+                {
+                    digitIndex++;
+                    if (digitIndex == maxDigits)
+                        digitIndex = 0;
+                }
                 break;
                 Sseg::Write_Number_To_Display(Number, WEIGHT, false, 0, true, true, maxDigits, false, false);
                 blinkDigit = Sseg::ReadDisplayBuffer(DisplayPos[currentLocation] + digitIndex);
