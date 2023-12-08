@@ -1,5 +1,10 @@
 #include <core/device_driver/gpio/gpio.h>
 #include "core/definations.h"
+#include <iostream>
+#include <future>
+
+using std::async;
+using std::future;
 
 namespace GPIO
 {
@@ -69,12 +74,34 @@ namespace GPIO
         esp_rom_gpio_pad_select_gpio(Relay_8);
         gpio_set_direction(Relay_8, GPIO_MODE_OUTPUT);
         // CALIBRATION JAMPER IO'S INITIALIZATION
-        esp_rom_gpio_pad_select_gpio(CAL_JMP);
-        gpio_set_direction(CAL_JMP, GPIO_MODE_INPUT);
+        esp_rom_gpio_pad_select_gpio(CALIBRATION_SWITCH);
+        gpio_set_direction(CALIBRATION_SWITCH, GPIO_MODE_INPUT);
         // CASH IO'S INITIALIZATION
         esp_rom_gpio_pad_select_gpio(CASH);
         gpio_set_direction(CASH, GPIO_MODE_OUTPUT);
         gpio_set_level(CASH, 0);
+    }
+    void Gpio::TurnBuzzerOn(uint16_t durationMS)
+    {
+        f1 = std::async(std::launch::async, &vpcc, durationMS);
+    }
+    void Gpio::vpcc(uint16_t durationMS)
+    {
+        gpio_set_level(BUZZER, HICH_LEVEL);
+        std::this_thread::sleep_for( std::chrono::milliseconds{durationMS});
+        gpio_set_level(BUZZER, LOW_LEVEL);
+    }
 
+    void Gpio::TurnCashOn()
+    {
+        gpio_set_level(BUZZER, HICH_LEVEL);
+    }
+    void Gpio::TurnCashOff()
+    {
+        gpio_set_level(BUZZER, LOW_LEVEL);
+    }
+    bool Gpio::readCalibrationSwitchStatus(void)
+    {
+        return gpio_get_level(CALIBRATION_SWITCH);
     }
 }

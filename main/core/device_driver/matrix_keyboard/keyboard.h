@@ -24,6 +24,10 @@
 #define KEY_TARE    108
 #define KEY_CLEAR    81
 #define KEY_RESAULT 105
+#define KEY_MUL     100
+#define KEY_ADD      97
+#define KEY_FUNC    104
+
 
 const uint8_t englishKeyMap[112] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

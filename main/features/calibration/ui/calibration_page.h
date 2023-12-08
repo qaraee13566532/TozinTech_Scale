@@ -25,6 +25,7 @@ using std::string;
 #define SaveZeroPoint 11
 #define DoCalibration 12
 #define SaveCalibration 13
+#define EnterData "13"
 
 namespace CALIBRATION
 {
@@ -36,21 +37,24 @@ namespace CALIBRATION
         static inline uint16_t blinkDelay;
         static inline uint32_t Number;
         static inline int dataSize;
-        static inline bool keytype,enableToEntering;
+        static inline bool keytype,enableToEntering,showHelper,weightReady,isCalibrated;
         static inline string helperMessage;
         static inline string digitsBuffer;
+        static inline uint8_t calibProgress;
 
         static void generalTaks(uint8_t pageState, uint8_t maxDigits, uint8_t currentLocation, string helperMessage, string nextPageTitle, uint32_t nextPageValue);
         static void generalSelectionsTaks(const map<uint8_t, uint32_t> valueMap, const map<uint8_t, string> helperMap, uint8_t pageState, uint8_t maxDigits, uint8_t currentLocation, string helperMessage, string nextPageTitle, uint32_t nextPageValue, bool showHelper);
 
     public:
         static void RunTasks(void);
+        static inline  map<uint8_t, uint32_t> valueMap;
+        static inline  map<uint8_t, string> helperMap;
         static inline const map<uint8_t, uint32_t> platformValueMap{{0, 1}, {1, 2}};
         static inline const map<uint8_t, string> standardHelperMap{{0, " nonE  "}, {1, " oIML  "}};
         static inline const map<uint8_t, uint32_t> standardValueMap{{0, 1}, {1, 2}};
-        static inline const map<uint8_t, string> calTypeHelperMap{{0, "mULTI-r"}, {1, "mULTI-I"}};
-        static inline const map<uint8_t, uint32_t> calTypeValueMap{{0, 1}, {1, 2}};
-        static inline const map<uint8_t, string> unitHelperMap{{0, " grAm  "}, {1, "ki-grAm"}, {2, "  ton  "}, {3, " Pound "}, {4, " ounCE "}};
+        static inline const map<uint8_t, string> calTypeHelperMap{{0, "SingL-r"},{1, "mULTI-r"}, {2, "mULTI-I"}};
+        static inline const map<uint8_t, uint32_t> calTypeValueMap{{0, 1}, {1, 2},{2, 3}};
+        static inline const map<uint8_t, string> unitHelperMap{{0, " grAm  "}, {1, "  kg   "}, {2, "  ton  "}, {3, " Pound "}, {4, " ounCE "}};
         static inline const map<uint8_t, uint32_t> unitValueMap{{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}};
         static inline const map<uint8_t, string> decimalpointHelperMap{{0, " ----- "}, {1, "  0.0   "}, {2, "  0.00  "}, {3, "  0.000 "}, {4, " 0.0000 "}};
         static inline const map<uint8_t, uint32_t> decimalpointValueMap{{0, 0}, {1, 1}, {2, 2}, {3, 3}, {4, 4}};

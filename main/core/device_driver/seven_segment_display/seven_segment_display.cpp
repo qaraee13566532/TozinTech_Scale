@@ -231,6 +231,7 @@ namespace SSEG_DEVICE_DRIVER
     {
         uint8_t dcnt, dig_dsp, len = 0, pos;
         int32_t temp_input;
+        
         if (alignCenter == true)
         {
             temp_input = input;
@@ -276,7 +277,7 @@ namespace SSEG_DEVICE_DRIVER
                         displayBuffer[dcnt] = DISPOFF;
                 }
             }
-            if (dcnt == decimapPointPosition + DisplayPos[displayPart] && showDecimalPoint)
+            if (dcnt == decimapPointPosition + DisplayPos[displayPart] && showDecimalPoint && decimapPointPosition>0)
                 displayBuffer[dcnt] |= POINT;
             input /= 10;
 

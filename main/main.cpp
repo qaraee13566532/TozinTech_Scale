@@ -1,8 +1,12 @@
 #include <iostream>
 #include <map>
+#include <functional>
+#include <future>
 
 using std::cout;
 using std::endl;
+using std::function;
+using std::future;
 using std::map;
 using std::runtime_error;
 using std::string;
@@ -48,14 +52,37 @@ using namespace SNTP;
 using namespace MATRIX_KEYBOARD;
 using namespace CALIBRATION;
 
+// class A
+// {
+// public:
+//   A()
+//   { // implicit capture of this is deprecated in c++20
+//     m[0] = [this](int v)
+//     { F1(v); };
+//     m[1] = [this](int v)
+//     { F2(v); };
+//   }
+
+//   void F1(int v) { std::cout << "F1: " << v << endl; }
+//   void F2(int v) { std::cout << "F2: " << v << endl; }
+//   void O(int i, int v) { m[i](v); }
+
+// private:
+//   map<int, function<void(int)>> m;
+// };
+
+#include <future>
+
 void app_main(void)
 {
-
+  int main_task_state=0;
   // uint8_t keydata = 0, keyState = 0;
   // bool keytype = false;
   // int16_t cmc = 0;
 
-  initialize();
+  // A a;
+  // a.O(0, 16);
+  // a.O(1, 19);
 
   // cJSON *root;
   // string TAG;
@@ -78,6 +105,7 @@ void app_main(void)
   // }
   // cJSON_Delete(root2);
 
+  initialize();
   CalibrationPage::RunTasks();
 
   // int16_t cc = 0;

@@ -5,6 +5,7 @@
 #include "math.h"
 #include "cJSON.h"
 #include <map>
+#include "core/device_driver/timer/timer.h"
 
 using std::cout;
 using std::endl;
@@ -13,6 +14,7 @@ using std::runtime_error;
 using std::string;
 
 using namespace ADC_ADS1232;
+using namespace GLOBAL_TIMER;
 
 namespace CALIBRATION
 {
@@ -20,28 +22,57 @@ namespace CALIBRATION
     {
         cjson = cJSON_CreateObject();
         cJSON_AddNumberToObject(cjson, "platformId", platformId);
+        cJSON_AddNumberToObject(cjson, "calibrationStandart", calibrationStandardIndex);
+        cJSON_AddNumberToObject(cjson, "loadcellType", loadcellTypeIndex);
+        cJSON_AddNumberToObject(cjson, "calibrationUnit", calibrationUnitIndex);
+        cJSON_AddNumberToObject(cjson, "firstAccuracy", firstAccuracy);
+        cJSON_AddNumberToObject(cjson, "secondAccuracy", secondAccuracy);
+        cJSON_AddNumberToObject(cjson, "decimalPointPosition", decimalPointPosition);
         cJSON_AddNumberToObject(cjson, "firstIntervalMax", firstIntervalMax);
         cJSON_AddNumberToObject(cjson, "secondIntervalMax", secondIntervalMax);
         cJSON_AddNumberToObject(cjson, "calibrationAdcOffset", calibrationAdcOffset);
         cJSON_AddNumberToObject(cjson, "calibrationLoad", calibrationLoad);
         cJSON_AddNumberToObject(cjson, "weightFactor", weightFactor);
-        cJSON_AddNumberToObject(cjson, "firstAccuracy", firstAccuracy);
-        cJSON_AddNumberToObject(cjson, "secondAccuracy", secondAccuracy);
-        cJSON_AddNumberToObject(cjson, "decimalPointPosition", decimalPointPosition);
-        cJSON_AddStringToObject(cjson, "calibrationUnit", calibrationUnitMap.at(calibrationUnitIndex).c_str());
         isCalibrated == true ? cJSON_AddTrueToObject(cjson, "isCalibrated") : cJSON_AddFalseToObject(cjson, "isCalibrated");
-        hasEstandard == true ? cJSON_AddTrueToObject(cjson, "hasEstandard") : cJSON_AddFalseToObject(cjson, "hasEstandard");
-        cJSON_AddStringToObject(cjson, "calibrationType", calibrationTypeMap.at(calibrationType).c_str());
-
         cJSON_AddNumberToObject(cjson, "netAdc", netAdc);
         serializedData = cJSON_Print(cjson);
         cJSON_Delete(cjson);
+    }
+    int8_t Calibration::getStringKey(map<uint8_t, string> map, string value)
+    {
+        for (auto entry : map)
+        {
+            if (entry.second == cJSON_GetObjectItem(cjson, value.c_str())->valuestring)
+                return entry.first;
+        }
+        return -1;
+    }
+    int8_t Calibration::getIntegerKey(map<uint8_t, uint32_t> map, uint32_t value)
+    {
+        for (auto entry : map)
+        {
+            if (entry.second == cJSON_GetObjectItem(cjson, std::to_string(value).c_str())->valueint)
+                return entry.first;
+        }
+        return -1;
     }
     void Calibration::fromJson()
     {
         cjson = cJSON_Parse(serializedData.c_str());
         if (cJSON_GetObjectItem(cjson, "platformId"))
             platformId = cJSON_GetObjectItem(cjson, "platformId")->valueint;
+        if (cJSON_GetObjectItem(cjson, "calibrationStandart"))
+            calibrationStandardIndex = cJSON_GetObjectItem(cjson, "calibrationStandart")->valueint;
+        if (cJSON_GetObjectItem(cjson, "loadcellType"))
+            loadcellTypeIndex = cJSON_GetObjectItem(cjson, "loadcellType")->valueint;
+        if (cJSON_GetObjectItem(cjson, "calibrationUnit"))
+            calibrationUnitIndex = cJSON_GetObjectItem(cjson, "calibrationUnit")->valueint;
+        if (cJSON_GetObjectItem(cjson, "firstAccuracy"))
+            firstAccuracy = cJSON_GetObjectItem(cjson, "firstAccuracy")->valueint;
+        if (cJSON_GetObjectItem(cjson, "secondAccuracy"))
+            secondAccuracy = cJSON_GetObjectItem(cjson, "secondAccuracy")->valueint;
+        if (cJSON_GetObjectItem(cjson, "decimalPointPosition"))
+            decimalPointPosition = cJSON_GetObjectItem(cjson, "decimalPointPosition")->valueint;
         if (cJSON_GetObjectItem(cjson, "firstIntervalMax"))
             firstIntervalMax = cJSON_GetObjectItem(cjson, "firstIntervalMax")->valueint;
         if (cJSON_GetObjectItem(cjson, "secondIntervalMax"))
@@ -52,67 +83,70 @@ namespace CALIBRATION
             calibrationLoad = cJSON_GetObjectItem(cjson, "calibrationLoad")->valueint;
         if (cJSON_GetObjectItem(cjson, "weightFactor"))
             weightFactor = cJSON_GetObjectItem(cjson, "weightFactor")->valuedouble;
-        if (cJSON_GetObjectItem(cjson, "firstAccuracy"))
-            firstAccuracy = cJSON_GetObjectItem(cjson, "firstAccuracy")->valueint;
-        if (cJSON_GetObjectItem(cjson, "secondAccuracy"))
-            secondAccuracy = cJSON_GetObjectItem(cjson, "secondAccuracy")->valueint;
-        if (cJSON_GetObjectItem(cjson, "decimalPointPosition"))
-            decimalPointPosition = cJSON_GetObjectItem(cjson, "decimalPointPosition")->valueint;
-        if (cJSON_GetObjectItem(cjson, "calibrationType"))
-            calibrationType = cJSON_GetObjectItem(cjson, "decimalPointPosition")->valueint;
-        if (cJSON_GetObjectItem(cjson, "calibrationUnit"))
-        {
-            for (auto entry : calibrationUnitMap)
-            {
-                if (entry.second == cJSON_GetObjectItem(cjson, "calibrationUnit")->valuestring)
-                {
-                    decimalPointPosition = entry.first;
-                    break; // Exit from the loop.
-                }
-            }
-        }
         if (cJSON_GetObjectItem(cjson, "isCalibrated"))
             isCalibrated = cJSON_GetObjectItem(cjson, "isCalibrated")->valueint;
-        if (cJSON_GetObjectItem(cjson, "hasEstandard"))
-            hasEstandard = cJSON_GetObjectItem(cjson, "hasEstandard")->valueint;
         if (cJSON_GetObjectItem(cjson, "netAdc"))
             netAdc = cJSON_GetObjectItem(cjson, "netAdc")->valueint;
         cJSON_Delete(cjson);
     }
-    bool Calibration ::validateAccuracy(uint32_t value)
+    void Calibration::calcWeight(void)
     {
-        if (value == 1 || value == 2 || value == 5 || value == 10 || value == 20 || value == 25 ||
-            value == 50 || value == 100 || value == 200 || value == 250 || value == 500 )
-        {
-            return true;
-        }
-        else
-            return false;
+        netAdc = Adc::filterdRawAdc[platformId] - calibrationAdcOffset;
+        weight = weightFactor * netAdc;
     }
-    void Calibration ::performCalibration(void)
+    void Calibration ::InitCalibration(uint8_t &Progress)
     {
-        if (platformId >= MAX_PLATFORM_NUMBER)
-            throw runtime_error("! Unkown platform ID .");
-        if (netAdc < 0)
-            throw runtime_error("! Adc is Negative .");
-        if (decimalPointPosition > 3)
-            throw runtime_error("!Unkown decimal point16_t .");
-        if (calibrationLoad == 0)
-            throw runtime_error("!Unkown calibration load .");
-        while (Adc::isAdcDataReceived[platformId] == false)
+        isCalibrationSaved=false;
+        Timer::freeRuningTimerMS = 1000;
+        calibProgress = 5;
+        Progress = calibProgress;
+        isCalibrated = false;
+    }
+    void Calibration ::performCalibration(uint8_t &Progress, bool &update)
+    {
+        if (Adc::isAdcDataReceived[platformId] == true)
         {
             Adc::isAdcDataReceived[platformId] = false;
-            double realCalibrationLoad = calibrationLoad * pow(10, 3 - decimalPointPosition);
-            weightFactor = realCalibrationLoad / netAdc;
+            update = true;
+            if (isCalibrated == false)
+            {
+                try
+                {
+                    double realCalibrationLoad = calibrationLoad * pow(10, 3 - decimalPointPosition);
+                    netAdc = Adc::filterdRawAdc[platformId] - calibrationAdcOffset;
+                    if (netAdc <= 64)
+                        throw runtime_error("! The ADC digital number is low or negative .");
+                    if (calibrationLoad == 0)
+                        throw runtime_error("! Calibration load is zero.");
+                    weight = weightFactor * netAdc;
+                    printf("weight = %f  -- calibrationLoad = %ld  --  accuracyMap = %d -- abs = %f\n", weight, calibrationLoad, accuracyMap.at(firstAccuracy), fabs(weight - calibrationLoad));
+                    if (fabs(weight - calibrationLoad) <= accuracyMap.at(firstAccuracy))
+                    {
+                        if (Timer::freeRuningTimerMS == 0)
+                        {
+                            Timer::freeRuningTimerMS = 1000;
+                            calibProgress--;
+                            Progress = calibProgress;
+                            if (calibProgress == 0)
+                                isCalibrated = true;
+                        }
+                    }
+                    else
+                    {
+                        weightFactor = realCalibrationLoad / netAdc;
+                        InitCalibration(Progress);
+                    }
+                }
+                catch (const std::exception &e)
+                {
+                    std::cerr << e.what() << '\n';
+                }
+            }
         }
     }
 
     void Calibration::setZero(void)
     {
-        // if (platformId == 0 || platformId > 2)
-        //     throw runtime_error("Exception in platform ID .");
-        // if (Adc::isAdcNegative)
-        //     throw runtime_error("!Negative ADC number .");
-        calibrationAdcOffset = Adc::rawAdc[platformId];
+        calibrationAdcOffset = Adc::filterdRawAdc[platformId];
     }
 }

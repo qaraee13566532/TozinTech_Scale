@@ -68,7 +68,7 @@ namespace ADC_ADS1232
         uint8_t loopCounter;
         for (loopCounter = 0; loopCounter < 26; loopCounter++)
             MakeAdcClock();
-        useFiltering[FIRST_PLATFORM] = false;
+        useFiltering[FIRST_PLATFORM] = true;
     //    lpFilter[FIRST_PLATFORM] = FIR_filter(10, 0.1, 0, (int8_t*)"lp", (int8_t*)"hamming");
         filteringRange[FIRST_PLATFORM] = 100000;
         filteringTaps[FIRST_PLATFORM] = 17;
