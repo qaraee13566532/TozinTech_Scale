@@ -27,6 +27,9 @@
 #define KEY_MUL     100
 #define KEY_ADD      97
 #define KEY_FUNC    104
+#define KEY_ONOFF   106
+
+
 
 
 const uint8_t englishKeyMap[112] = {
@@ -86,5 +89,6 @@ namespace MATRIX_KEYBOARD
         static void SavePressedKeysToBuffer(gpio_num_t keyRow, uint8_t rowId);
         static gpio_num_t GetRowGpio(uint8_t rowId);
         static void readKeyBuffer(uint8_t &data, bool &typ);
+        static bool isKeyPressed(void);
     };
 }

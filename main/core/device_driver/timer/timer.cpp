@@ -60,4 +60,5 @@ namespace GLOBAL_TIMER
         externalReadAdcTime = 0;
         chipAdcReadTime = 0;
     }
+
 }

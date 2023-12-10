@@ -183,6 +183,18 @@ namespace SSEG_DEVICE_DRIVER
         for (loopCounter = 0; loopCounter < digitNumber; loopCounter++)
             displayBuffer[loopCounter] = 0;
     }
+    void Sseg::fillDisplay(uint8_t fill_char)
+    {
+        uint8_t position = DisplayPos[WEIGHT],loopCounter;
+        for (loopCounter = 0; loopCounter < DisplayMaxDigitNo[WEIGHT]; loopCounter++)
+            displayBuffer[position + loopCounter] = Text_Convertion_Table[fill_char];
+        position = DisplayPos[UNIT_PRICE];
+        for (loopCounter = 0; loopCounter < DisplayMaxDigitNo[UNIT_PRICE]; loopCounter++)
+            displayBuffer[position + loopCounter] = Text_Convertion_Table[fill_char];
+        position = DisplayPos[TOTAL_PRICE];
+        for (loopCounter = 0; loopCounter < DisplayMaxDigitNo[TOTAL_PRICE]; loopCounter++)
+            displayBuffer[position + loopCounter] = Text_Convertion_Table[fill_char];
+    }
     void Sseg::Write_Message_To_Display(string Message, uint8_t displayPart, uint8_t posintion, bool cleanFirst)
     {
         uint16_t loopCnt, DispCnt = 0, pointPos = 0;
@@ -208,7 +220,10 @@ namespace SSEG_DEVICE_DRIVER
                     DispCnt++;
                 }
                 else
+                {
                     displayBuffer[pointPos] |= POINT;
+                    Len++;
+                }
             }
         }
     }
@@ -231,7 +246,7 @@ namespace SSEG_DEVICE_DRIVER
     {
         uint8_t dcnt, dig_dsp, len = 0, pos;
         int32_t temp_input;
-        
+
         if (alignCenter == true)
         {
             temp_input = input;
@@ -277,7 +292,7 @@ namespace SSEG_DEVICE_DRIVER
                         displayBuffer[dcnt] = DISPOFF;
                 }
             }
-            if (dcnt == decimapPointPosition + DisplayPos[displayPart] && showDecimalPoint && decimapPointPosition>0)
+            if (dcnt == decimapPointPosition + DisplayPos[displayPart] && showDecimalPoint && decimapPointPosition > 0)
                 displayBuffer[dcnt] |= POINT;
             input /= 10;
 

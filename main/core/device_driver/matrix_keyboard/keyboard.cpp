@@ -1,6 +1,8 @@
 #include "core/device_driver/matrix_keyboard/keyboard.h"
 #include "core/device_driver/gpio/gpio.h"
 
+using namespace GPIO;
+
 namespace MATRIX_KEYBOARD
 {
 
@@ -47,7 +49,13 @@ namespace MATRIX_KEYBOARD
         }
         return loopCounter;
     }
-
+    bool Keyboard::isKeyPressed(void)
+    {
+        if (pressedKeysNumber > 0)
+            return true;
+        else
+            return false;
+    }
     void Keyboard::SavePressedKeysToBuffer(gpio_num_t keyRow, uint8_t rowId)
     {
         uint8_t freeBufferLocation;
@@ -174,6 +182,7 @@ namespace MATRIX_KEYBOARD
                             pressedKeysColoumnBuffer[loopCounter] = 0;
                             if (pressedKeysNumber > 0)
                                 pressedKeysNumber--;
+                            Gpio::TurnBuzzerOn(50);
                         }
                     }
                     else
@@ -188,7 +197,7 @@ namespace MATRIX_KEYBOARD
             keyColumnCounter = 0;
         KeyIOSetReset(Scan_Port_Address[keyColumnCounter], 1);
     }
-    void Keyboard::readKeyBuffer(uint8_t  &data, bool  &type)
+    void Keyboard::readKeyBuffer(uint8_t &data, bool &type)
     {
         if (keyHead != keyTail)
         {
@@ -201,5 +210,5 @@ namespace MATRIX_KEYBOARD
         else
             data = 0;
     }
-    
+
 }
