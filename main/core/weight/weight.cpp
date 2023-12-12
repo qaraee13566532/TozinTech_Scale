@@ -42,14 +42,16 @@ namespace ADS1232_WEIGHT
                 isNetWeight = true;
             else
                 isNetWeight = false;
-            if (roundedWeight > (int32_t)firstIntervalMax)
+            if (roundedWeight <= (int32_t)firstIntervalMax)
+            {
                 isFirstInterval = true;
-            else
-                isFirstInterval = false;
-            if (roundedWeight > (int32_t)secondIntervalMax)
-                isSecondInterval = true;
-            else
                 isSecondInterval = false;
+            }
+            else
+            {
+                isSecondInterval = true;
+                isFirstInterval = false;
+            }
             if (holdWeight == false)
                 netWeight = roundedWeight - taredWeight;
             if (netWeight < 0)
@@ -64,7 +66,6 @@ namespace ADS1232_WEIGHT
                 isOverWeight = true;
             else
                 isOverWeight = false;
-
             printf("isStable = %d - isZero = %d - isNet =%d -  isFirstInterval =%d -  isSecondInterval =%d -  isNegative =%d -  isUnder =%d -  isOver =%d\n", isWeightStable, isWeightZero, isNetWeight, isFirstInterval, isSecondInterval, isWeightNegative, isUnderWeight, isOverWeight);
             //       printf("netAdc = %ld  -- weight = %f  --  roundedWeight = %ld -- netWeight = %ld- - taredWeight = %ld\n", netAdc, weight, roundedWeight, netWeight, taredWeight);
 

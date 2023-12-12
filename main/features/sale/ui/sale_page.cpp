@@ -30,6 +30,7 @@ namespace SALE
         case SALE_RUN_TASK:
             if (weights[0].CalcWeight())
             {
+                Sseg::showLedIndicators(0);
                 if (weights[0].isUnderWeight == false)
                 {
                     if (weights[0].isOverWeight == false)

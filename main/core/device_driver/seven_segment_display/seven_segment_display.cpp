@@ -10,6 +10,8 @@
 #include <sstream>
 #include <string>
 #include "core/device_driver/timer/timer.h"
+#include "core/weight/weight.h"
+#include "core/device_driver/adc_ads1232/adc.h"
 #include <map>
 
 using std::map;
@@ -21,6 +23,9 @@ using std::string;
 
 using namespace MATRIX_KEYBOARD;
 using namespace GLOBAL_TIMER;
+using namespace ADS1232_WEIGHT;
+
+extern Weight weights[MAX_PLATFORM_NUMBER];
 
 namespace SSEG_DEVICE_DRIVER
 {
@@ -185,7 +190,7 @@ namespace SSEG_DEVICE_DRIVER
     }
     void Sseg::fillDisplay(uint8_t fill_char)
     {
-        uint8_t position = DisplayPos[WEIGHT],loopCounter;
+        uint8_t position = DisplayPos[WEIGHT], loopCounter;
         for (loopCounter = 0; loopCounter < DisplayMaxDigitNo[WEIGHT]; loopCounter++)
             displayBuffer[position + loopCounter] = Text_Convertion_Table[fill_char];
         position = DisplayPos[UNIT_PRICE];
@@ -273,7 +278,7 @@ namespace SSEG_DEVICE_DRIVER
         do
         {
             dig_dsp = input % 10;
-            if (input || Show_BackZero || dcnt<decimapPointPosition+1)
+            if (input || Show_BackZero || dcnt < decimapPointPosition + 1)
                 displayBuffer[dcnt] = Text_Convertion_Table[dig_dsp + '0'];
             else
             {
@@ -434,6 +439,17 @@ namespace SSEG_DEVICE_DRIVER
             digitIndex = 0;
             break;
         }
+    }
+    void Sseg::showLedIndicators(uint8_t platformId)
+    {
+        weights[platformId].isWeightZero == true ? displayBuffer[6] |= 0x01 : displayBuffer[6] &= 0xfe;
+        weights[platformId].isWeightStable == true ? displayBuffer[6] |= 0x02 : displayBuffer[6] &= 0xfd;
+        weights[platformId].isNetWeight == true ? displayBuffer[6] |= 0x04 : displayBuffer[6] &= 0xfb;
+        weights[platformId].isFirstInterval == true ? displayBuffer[6] |= 0x08 : displayBuffer[6] &= 0xf7;
+        weights[platformId].isSecondInterval == true ? displayBuffer[6] |= 0x10 : displayBuffer[6] &= 0xef;
+        weights[platformId].isOverWeight == true ? displayBuffer[6] |= 0x20 : displayBuffer[6] &= 0xdf;
+        weights[platformId].isUnderWeight == true ? displayBuffer[6] |= 0x40 : displayBuffer[6] &= 0xbf;
+        weights[platformId].holdWeight == true ? displayBuffer[6] |= 0x80 : displayBuffer[6] &= 0x7f;
     }
     void Sseg::ResetBlinkTimer(uint16_t delayMS)
     {

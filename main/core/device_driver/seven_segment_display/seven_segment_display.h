@@ -66,6 +66,7 @@ namespace SSEG_DEVICE_DRIVER
         static void ResetBlinkTimer(uint16_t delayMS);
         static void selectItem(const map<uint8_t, uint32_t> valueMap,const map<uint8_t, string> helperMap,uint8_t &keyCode, uint8_t displayPart, uint8_t maxDigits, uint32_t &selector,bool showHelper);
         static void fillDisplay(uint8_t fill_char);
+        static void showLedIndicators(uint8_t platformId);
        
     private:
         static void StartBus(uint8_t chipNumber);
