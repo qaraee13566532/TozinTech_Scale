@@ -33,7 +33,7 @@ namespace CALIBRATION
         cJSON_AddNumberToObject(cjson, "decimalPointPosition", decimalPointPosition);
         cJSON_AddNumberToObject(cjson, "firstIntervalMax", firstIntervalMax);
         cJSON_AddNumberToObject(cjson, "secondIntervalMax", secondIntervalMax);
-        cJSON_AddNumberToObject(cjson, "calibrationAdcOffset", calibrationAdcOffset);
+        cJSON_AddNumberToObject(cjson, "adcOffset", adcOffset);
         cJSON_AddNumberToObject(cjson, "calibrationLoad", calibrationLoad);
         cJSON_AddNumberToObject(cjson, "weightFactor", weightFactor);
         isCalibrated == true ? cJSON_AddTrueToObject(cjson, "isCalibrated") : cJSON_AddFalseToObject(cjson, "isCalibrated");
@@ -80,8 +80,8 @@ namespace CALIBRATION
             firstIntervalMax = cJSON_GetObjectItem(cjson, "firstIntervalMax")->valueint;
         if (cJSON_GetObjectItem(cjson, "secondIntervalMax"))
             secondIntervalMax = cJSON_GetObjectItem(cjson, "secondIntervalMax")->valueint;
-        if (cJSON_GetObjectItem(cjson, "calibrationAdcOffset"))
-            calibrationAdcOffset = cJSON_GetObjectItem(cjson, "calibrationAdcOffset")->valueint;
+        if (cJSON_GetObjectItem(cjson, "adcOffset"))
+            adcOffset = cJSON_GetObjectItem(cjson, "adcOffset")->valueint;
         if (cJSON_GetObjectItem(cjson, "calibrationLoad"))
             calibrationLoad = cJSON_GetObjectItem(cjson, "calibrationLoad")->valueint;
         if (cJSON_GetObjectItem(cjson, "weightFactor"))
@@ -94,7 +94,7 @@ namespace CALIBRATION
     }
     void Calibration::calcWeight(void)
     {
-        netAdc = Adc::filterdRawAdc[platformId] - calibrationAdcOffset;
+        netAdc = Adc::filterdRawAdc[platformId] - adcOffset;
         weight = weightFactor * netAdc;
     }
     void Calibration ::InitCalibration(uint8_t &Progress)
@@ -122,13 +122,13 @@ namespace CALIBRATION
                 try
                 {
                     double realCalibrationLoad = calibrationLoad * pow(10, 3 - decimalPointPosition);
-                    netAdc = Adc::filterdRawAdc[platformId] - calibrationAdcOffset;
+                    netAdc = Adc::filterdRawAdc[platformId] - adcOffset;
                     if (netAdc <= 64)
                         throw runtime_error("! The ADC digital number is low or negative .");
                     if (calibrationLoad == 0)
                         throw runtime_error("! Calibration load is zero.");
                     weight = weightFactor * netAdc;
-                    printf("weight = %f  -- calibrationLoad = %ld  --  accuracyMap = %d -- abs = %f\n", weight, calibrationLoad, accuracyMap.at(firstAccuracy), fabs(weight - calibrationLoad));
+              //      printf("weight = %f  -- calibrationLoad = %ld  --  accuracyMap = %d -- abs = %f\n", weight, calibrationLoad, accuracyMap.at(firstAccuracy), fabs(weight - calibrationLoad));
                     if (fabs(weight - calibrationLoad) <= accuracyMap.at(firstAccuracy))
                     {
                         if (Timer::freeRuningTimerMS == 0)
@@ -159,6 +159,6 @@ namespace CALIBRATION
 
     void Calibration::setZero(void)
     {
-        calibrationAdcOffset = Adc::filterdRawAdc[platformId];
+        adcOffset = Adc::filterdRawAdc[platformId];
     }
 }

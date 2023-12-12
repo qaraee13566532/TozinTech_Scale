@@ -1,7 +1,6 @@
 #include "core/calibration/ui/calibration_page.h"
 #include "core/definations.h"
 #include "core/device_driver/seven_segment_display/seven_segment_display.h"
-#include "core/global_variables.h"
 #include "core/device_driver/matrix_keyboard/keyboard.h"
 #include <string.h>
 #include <stdio.h>
@@ -33,6 +32,8 @@ using namespace STORAGE;
 using namespace ADC_ADS1232;
 using namespace GPIO;
 using namespace ADS1232_WEIGHT;
+
+extern Calibration weightPlatforms[MAX_PLATFORM_NUMBER];
 
 namespace CALIBRATION
 {
@@ -88,13 +89,10 @@ namespace CALIBRATION
         {
             if (Gpio::readCalibrationSwitchStatus() == false)
             {
-                if (weightPlatforms[currentPlatform].isCalibrationSaved == false && pageState == DoCalibration && weightPlatforms[currentPlatform].isCalibrated)
-                {
-                    weightPlatforms[currentPlatform].toJson();
-                    Storage::Save(CALIBRATION_PATH, weightPlatforms[currentPlatform].serializedData);
-                    weightPlatforms[currentPlatform].isCalibrationSaved = true;
-                    Gpio::TurnBuzzerOn(500);
-                }
+                weightPlatforms[currentPlatform].toJson();
+                Storage::Save(CALIBRATION_PATH, weightPlatforms[currentPlatform].serializedData);
+                weightPlatforms[currentPlatform].isCalibrationSaved = true;
+                Gpio::TurnBuzzerOn(500);
             }
             if (pageState > CalibrationInitialize)
                 Sseg::viewScrollMessage(helperMessage, TOTAL_PRICE, ScrollMessageDelayMS);
@@ -224,7 +222,7 @@ namespace CALIBRATION
                 case SelectFirstAccuracy:
                     weightPlatforms[currentPlatform].firstAccuracy = Number;
                     if (weightPlatforms[currentPlatform].loadcellTypeIndex == 0)
-                        generalSelectionsTaks(decimalpointValueMap, decimalpointHelperMap, SelectDecimalPointPosition, 1, WEIGHT, "dEcimAL Point .  ", "dp=", 0, true);
+                        generalSelectionsTaks(decimalpointValueMap, decimalpointHelperMap, SelectDecimalPointPosition, 1, WEIGHT, "dEcimAL Point .  ", "dp=", weightPlatforms[currentPlatform].decimalPointPosition, true);
                     else
                         generalSelectionsTaks(accuracyValueMap, empty, SelectSecondAccuracy, 2, WEIGHT, "SEcond ACCUrACY .  ", "d2=", weightPlatforms[currentPlatform].secondAccuracy, false);
                     break;
@@ -235,7 +233,7 @@ namespace CALIBRATION
                 case SelectDecimalPointPosition:
                     weightPlatforms[currentPlatform].decimalPointPosition = Number;
                     if (weightPlatforms[currentPlatform].loadcellTypeIndex == 0)
-                        generalTaks(EnterFirstMax, 6, WEIGHT, "mAX VEigHt .  ", " Full ", weightPlatforms[currentPlatform].firstIntervalMax);
+                        generalTaks(EnterSecondMax, 6, WEIGHT, "mAX VEigHt .  ", " Full ", weightPlatforms[currentPlatform].firstIntervalMax);
                     else
                         generalTaks(EnterFirstMax, 6, WEIGHT, "FIrSt mAX .  ", "Full-1", weightPlatforms[currentPlatform].firstIntervalMax);
                     break;
@@ -294,7 +292,7 @@ namespace CALIBRATION
                 weightPlatforms[currentPlatform].decimalPointPosition = 3;
                 weightPlatforms[currentPlatform].firstIntervalMax = 15000;
                 weightPlatforms[currentPlatform].secondIntervalMax = 30000;
-                weightPlatforms[currentPlatform].calibrationAdcOffset = 65200;
+                weightPlatforms[currentPlatform].adcOffset = 65200;
                 weightPlatforms[currentPlatform].calibrationLoad = 25000;
                 weightPlatforms[currentPlatform].weightFactor = 0.33;
                 weightPlatforms[currentPlatform].isCalibrated = false;

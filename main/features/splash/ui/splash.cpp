@@ -25,6 +25,7 @@ using namespace GLOBAL_TIMER;
 using namespace GPIO;
 using namespace MATRIX_KEYBOARD;
 using namespace ADC_ADS1232;
+using namespace ADS1232_WEIGHT;
 using namespace CHIP_ADC;
 using namespace COMMIUNICATION_UART;
 using namespace PRINTER_UART;
@@ -43,13 +44,19 @@ namespace SPLASH
         uint8_t character = '9';
         for (loopCounter = 1000; loopCounter > 0 && cancellationToken == false; loopCounter--)
         {
-            DELAY(10);
+            DELAY(5);
             showCounter++;
             if (showCounter == 100)
             {
                 showCounter = 0;
                 Sseg::fillDisplay(character);
                 character--;
+                if (Adc::isAdcDataReceived[0] == true)
+                {
+                    Adc::isAdcDataReceived[0] = false;
+                    weights[0].CalcWeight();
+                    weights[0].StartupZero();
+                }
             }
         }
     }
@@ -64,6 +71,7 @@ namespace SPLASH
         cancellationToken = false;
         demoDelay = std::async(std::launch::async, &Demo);
         weightPlatforms[0].loadParameters();
+        weights[0].Initialize();
         state = SPLASH_RUN_TASK;
     }
 
@@ -80,6 +88,7 @@ namespace SPLASH
             {
                 Sseg::BlankDisplay();
                 Sseg::Write_Message_To_Display("rEAdy", WEIGHT, 6, true);
+                DELAY(1000);
                 appState = SALE_PAGE;
             }
             Keyboard::readKeyBuffer(keyCode, keytype);

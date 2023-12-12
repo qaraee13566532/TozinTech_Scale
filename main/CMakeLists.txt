@@ -21,7 +21,7 @@ core/calibration/usecase/calibration.cpp
 core/calibration/ui/calibration_page.cpp
 core/device_driver/adc_ads1232/fir_filter.cpp
 core/device_driver/adc_ads1232/MedianFilter.cpp
-
+features/sale/ui/sale_page.cpp
 
   
 INCLUDE_DIRS 
@@ -46,5 +46,5 @@ core/device_driver/commiunication_uart
 core/device_driver/matrix_keyboard  
 core/calibration/usecase
 core/calibration/ui
-
+features/sale/ui
 core/device_driver/seven_segment_display)

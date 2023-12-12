@@ -1,4 +1,6 @@
 
+#pragma once
+
 #include <rom/ets_sys.h>
 
 #define HICH_LEVEL 1

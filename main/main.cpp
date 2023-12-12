@@ -17,6 +17,7 @@
 #include "definations.h"
 #include "main.h"
 #include "core/calibration/ui/calibration_page.h"
+#include "features\sale\ui\sale_page.h"
 
 using namespace SSEG_DEVICE_DRIVER;
 using namespace GLOBAL_TIMER;
@@ -33,6 +34,7 @@ using namespace SNTP;
 using namespace SPLASH;
 using namespace CALIBRATION;
 using namespace MAIN_TASK;
+using namespace SALE;
 
 namespace MAIN_TASK
 {
@@ -67,9 +69,9 @@ namespace MAIN_TASK
       case SPLASH_SCREEN_PAGE:
         Splash::RunTasks(appState);
         break;
-      // case SALE_PAGE:
-      //   SALE::RunTasks(appState);
-      //   break;
+      case SALE_PAGE:
+        Sale::RunTasks(appState);
+        break;
       case CALIBRATION_PAGE:
         CalibrationPage::RunTasks();
         break;

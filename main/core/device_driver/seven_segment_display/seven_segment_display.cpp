@@ -273,7 +273,7 @@ namespace SSEG_DEVICE_DRIVER
         do
         {
             dig_dsp = input % 10;
-            if (input || Show_BackZero)
+            if (input || Show_BackZero || dcnt<decimapPointPosition+1)
                 displayBuffer[dcnt] = Text_Convertion_Table[dig_dsp + '0'];
             else
             {

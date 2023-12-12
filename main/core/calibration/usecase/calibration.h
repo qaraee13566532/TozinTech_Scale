@@ -21,8 +21,6 @@ using std::string;
 #define FOURTH_PLATFORM 3
 
 
-
-
 namespace CALIBRATION
 {
     class Calibration : public BaseWeight
@@ -51,7 +49,6 @@ namespace CALIBRATION
         const map<uint8_t, string> calibrationStandardHelperMap{{0, "nonE"}, {1, "oIML"}};
 
         string serializedData;
-        int32_t calibrationAdcOffset;
         uint32_t calibrationLoad;
         uint8_t calibrationUnitIndex;
         bool isCalibrated;
