@@ -22,6 +22,7 @@ core/calibration/ui/calibration_page.cpp
 core/device_driver/adc_ads1232/fir_filter.cpp
 core/device_driver/adc_ads1232/MedianFilter.cpp
 features/sale/ui/sale_page.cpp
+FarsiType.cpp
 
   
 INCLUDE_DIRS 

@@ -42,20 +42,22 @@ namespace SPLASH
     {
         uint32_t loopCounter, showCounter = 0;
         uint8_t character = '9';
-        for (loopCounter = 1000; loopCounter > 0 && cancellationToken == false; loopCounter--)
+        for (loopCounter = 1100; loopCounter > 0 && cancellationToken == false; loopCounter--)
         {
             DELAY(5);
             showCounter++;
             if (showCounter == 100)
             {
                 showCounter = 0;
-                Sseg::fillDisplay(character);
-                character--;
-                if (Adc::isAdcDataReceived[0] == true)
+                if (character == '0')
                 {
-                    Adc::isAdcDataReceived[0] = false;
-                    weights[0].CalcWeight();
-                    weights[0].StartupZero();
+                    Sseg::BlankDisplay();
+                    Sseg::Write_Message_To_Display("rEAdy", WEIGHT, 6, true);
+                }
+                else
+                {
+                    Sseg::fillDisplay(character);
+                    character--;
                 }
             }
         }
@@ -69,10 +71,11 @@ namespace SPLASH
         if (Keyboard::isKeyPressed())
             checkCalibKey = true;
         cancellationToken = false;
-        demoDelay = std::async(std::launch::async, &Demo);
+
         weightPlatforms[0].loadParameters();
         weights[0].Initialize();
         state = SPLASH_RUN_TASK;
+        demoDelay = std::async(std::launch::async, &Demo);
     }
 
     void Splash::RunTasks(uint16_t &appState)
@@ -81,16 +84,15 @@ namespace SPLASH
         {
         case SPLASH_INIT:
             Initialize();
+            keyCode = 0;
             break;
         case SPLASH_RUN_TASK:
+
+            if (weights[0].CalcWeight())
+                weights[0].StartupZero();
             status = demoDelay.wait_for(0s);
             if (status == std::future_status::ready)
-            {
-                Sseg::BlankDisplay();
-                Sseg::Write_Message_To_Display("rEAdy", WEIGHT, 6, true);
-                DELAY(1000);
                 appState = SALE_PAGE;
-            }
             Keyboard::readKeyBuffer(keyCode, keytype);
             if (checkCalibKey == true && keyCode == KEY_ZERO)
             {
@@ -100,6 +102,7 @@ namespace SPLASH
             switch (keyCode)
             {
             case KEY_ZERO:
+                printf("zero key pressed ...");
                 break;
             }
             keyCode = 0;

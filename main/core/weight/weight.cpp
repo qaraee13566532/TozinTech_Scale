@@ -19,8 +19,6 @@ namespace ADS1232_WEIGHT
         if (Adc::isAdcDataReceived[platformId] == true)
         {
             Adc::isAdcDataReceived[platformId] = false;
-            RemoveDrift();
-            CheckStability();
             netAdc = Adc::filterdRawAdc[platformId] - adcOffset;
             weight = weightFactor * netAdc;
             roundedWeight = weight;
@@ -38,7 +36,7 @@ namespace ADS1232_WEIGHT
                 isWeightZero = true;
             else
                 isWeightZero = false;
-            if (taredWeight > 0)
+            if (taredWeight + fixedTareWeight > 0)
                 isNetWeight = true;
             else
                 isNetWeight = false;
@@ -53,7 +51,7 @@ namespace ADS1232_WEIGHT
                 isFirstInterval = false;
             }
             if (holdWeight == false)
-                netWeight = roundedWeight - taredWeight;
+                netWeight = roundedWeight - taredWeight - fixedTareWeight;
             if (netWeight < 0)
                 isWeightNegative = true;
             else
@@ -66,8 +64,10 @@ namespace ADS1232_WEIGHT
                 isOverWeight = true;
             else
                 isOverWeight = false;
-            printf("isStable = %d - isZero = %d - isNet =%d -  isFirstInterval =%d -  isSecondInterval =%d -  isNegative =%d -  isUnder =%d -  isOver =%d\n", isWeightStable, isWeightZero, isNetWeight, isFirstInterval, isSecondInterval, isWeightNegative, isUnderWeight, isOverWeight);
-            //       printf("netAdc = %ld  -- weight = %f  --  roundedWeight = %ld -- netWeight = %ld- - taredWeight = %ld\n", netAdc, weight, roundedWeight, netWeight, taredWeight);
+            RemoveDrift();
+            CheckStability();
+            //    printf("isStable = %d - isZero = %d - isNet =%d -  isFirstInterval =%d -  isSecondInterval =%d -  isNegative =%d -  isUnder =%d -  isOver =%d\n", isWeightStable, isWeightZero, isNetWeight, isFirstInterval, isSecondInterval, isWeightNegative, isUnderWeight, isOverWeight);
+            printf("driftCount = %d -- rawadc = %ld -- offset = %ld  --- netAdc = %ld  -- weight = %f  --  roundedW = %ld -- netW = %ld -- taredW = %ld\n", driftCount, Adc::filterdRawAdc[platformId], adcOffset, netAdc, weight, roundedWeight, netWeight, taredWeight);
 
             return true;
         }
@@ -96,9 +96,10 @@ namespace ADS1232_WEIGHT
         isWeightStable = true;
         zeroLimit = (4 * firstIntervalMax / 100);
         startupZeroLimit = (20 * secondIntervalMax / 100);
-        driftLimit = accuracyMap.at(firstAccuracy) / 2;
+        driftLimit = accuracyMap.at(firstAccuracy);
         stableLimitValue = accuracyMap.at(firstAccuracy);
         stableLimitSample = 10;
+        fixedTareWeight = 0;
         overLimit = secondIntervalMax + (9 * accuracyMap.at(secondAccuracy));
     }
     uint8_t Weight::StartupZero(void)
@@ -106,15 +107,16 @@ namespace ADS1232_WEIGHT
         if (roundedWeight <= startupZeroLimit)
         {
             adcOffset = Adc::filterdRawAdc[platformId];
+            initOffset=adcOffset;
             return 0;
         }
         return 3;
     }
     uint8_t Weight::SetZero(void)
     {
-        if (taredWeight == 0)
+        if (taredWeight + fixedTareWeight == 0)
         {
-            if (labs(roundedWeight) <= zeroLimit)
+            if (labs((Adc::filterdRawAdc[platformId]-initOffset)*weightFactor) <= zeroLimit)
             {
                 if (isWeightStable == true)
                 {
@@ -150,13 +152,14 @@ namespace ADS1232_WEIGHT
     }
     uint8_t Weight::RemoveTare(void)
     {
-        if (netWeight < 0 && taredWeight > 0)
+        if (netWeight < 0 && taredWeight + fixedTareWeight > 0)
         {
-            if (labs(netWeight) == taredWeight)
+            if (labs(netWeight) == taredWeight + fixedTareWeight)
             {
                 if (holdWeight == false)
                 {
                     taredWeight = roundedWeight;
+                    fixedTareWeight = 0;
                     return 0;
                 }
                 return 1;
@@ -198,5 +201,26 @@ namespace ADS1232_WEIGHT
         {
             driftCount = 0;
         }
+    }
+    uint8_t Weight::setFixTare(int32_t tareValue)
+    {
+        if (fixedTareWeight == 0 )
+        {
+            if (isWeightStable == true)
+            {
+                if (holdWeight == false)
+                {
+                    fixedTareWeight = tareValue;
+                    return 0;
+                }
+                return 1;
+            }
+            return 2;
+        }
+        return 3;
+    }
+    int32_t Weight::readFixTare(void)
+    {
+        return fixedTareWeight;
     }
 }

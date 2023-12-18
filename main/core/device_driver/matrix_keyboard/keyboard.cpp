@@ -56,6 +56,15 @@ namespace MATRIX_KEYBOARD
         else
             return false;
     }
+    bool Keyboard::getPressingKeyCode(uint8_t keyNumber)
+    {
+        for (loopCounter = 0; loopCounter < MAX_PRESSED_KEY_BUFFER_SIZE; loopCounter++)
+        {
+            if ((longPressedKeysflag[loopCounter] == true || shortPressedKeysflag[loopCounter] == true) && (pressedKeysColoumnBuffer[loopCounter] * 8 + pressedKeysRowBuffer[loopCounter]) == keyNumber)
+                return true;
+        }
+        return false;
+    }
     void Keyboard::SavePressedKeysToBuffer(gpio_num_t keyRow, uint8_t rowId)
     {
         uint8_t freeBufferLocation;

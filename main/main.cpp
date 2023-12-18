@@ -1,4 +1,11 @@
 
+
+#include <codecvt>
+#include <cstdint>
+#include <iostream>
+#include <locale>
+#include <string>
+
 #include "features/splash/ui/splash.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -18,6 +25,7 @@
 #include "main.h"
 #include "core/calibration/ui/calibration_page.h"
 #include "features\sale\ui\sale_page.h"
+#include "FarsiType.h"
 
 using namespace SSEG_DEVICE_DRIVER;
 using namespace GLOBAL_TIMER;
@@ -67,6 +75,7 @@ namespace MAIN_TASK
       switch (appState)
       {
       case SPLASH_SCREEN_PAGE:
+
         Splash::RunTasks(appState);
         break;
       case SALE_PAGE:

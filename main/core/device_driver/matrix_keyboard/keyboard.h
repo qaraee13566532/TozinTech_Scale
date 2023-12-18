@@ -90,5 +90,6 @@ namespace MATRIX_KEYBOARD
         static gpio_num_t GetRowGpio(uint8_t rowId);
         static void readKeyBuffer(uint8_t &data, bool &typ);
         static bool isKeyPressed(void);
+        static bool getPressingKeyCode(uint8_t keyNumber);
     };
 }

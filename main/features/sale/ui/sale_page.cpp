@@ -41,6 +41,8 @@ namespace SALE
                 else
                     Sseg::Write_Message_To_Display("------", WEIGHT, 6, true);
             }
+            if(Keyboard::getPressingKeyCode(KEY_FUNC))
+                printf("KEY_FUNC = pressing\n");
             Keyboard::readKeyBuffer(keyCode, keytype);
             switch (keyCode)
             {
@@ -56,6 +58,12 @@ namespace SALE
             case KEY_CLEAR:
                 weights[0].holdWeight = !weights[0].holdWeight;
                 break;
+           case KEY_ONOFF:
+                weights[0].setFixTare(1250);
+                break;
+
+                
+
             }
             keyCode = 0;
             break;

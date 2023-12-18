@@ -27,6 +27,8 @@ namespace ADS1232_WEIGHT
 
     class Weight : public BaseWeight
     {
+        public:
+        uint32_t initOffset;
         uint8_t driftCount;
         int32_t zeroLimit;
         int32_t startupZeroLimit;
@@ -49,11 +51,14 @@ namespace ADS1232_WEIGHT
         void RemoveDrift(void);
         void CheckStability(void);
         void Initialize(void);
+        uint8_t setFixTare(int32_t tareValue);
+        int32_t readFixTare(void);
 
     public:
         int32_t roundedWeight;
         int32_t netWeight;
         uint32_t taredWeight;
+        uint32_t fixedTareWeight;
         bool holdWeight;
         bool isWeightStable;
         bool isWeightZero;
